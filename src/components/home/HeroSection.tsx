@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { UploadCloud, CheckCircle2 } from "lucide-react";
+import { UploadCloud, CheckCircle2, FileImage } from "lucide-react";
 
 export function HeroSection() {
   return (
@@ -40,21 +40,23 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6"
           >
             <Button
               size="lg"
-              className="h-14 px-8 text-lg w-full sm:w-auto shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all group"
+              variant="default"
+              className="text-lg w-full sm:w-auto"
+              icon={UploadCloud}
             >
-              <UploadCloud className="mr-2 h-5 w-5 group-hover:-translate-y-1 transition-transform" />
               Upload Photo
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="h-14 px-8 text-lg w-full sm:w-auto"
+              variant="secondary"
+              className="text-lg w-full sm:w-auto"
+              icon={FileImage}
             >
-              View Supported Formats
+              View Formats
             </Button>
           </motion.div>
 
