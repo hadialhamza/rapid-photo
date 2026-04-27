@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import { ScanFace, ImageMinus, SunMedium, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";

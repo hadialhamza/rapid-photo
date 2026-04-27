@@ -12,6 +12,7 @@ export function Navbar() {
             width={120}
             height={60}
             className="h-15 w-auto"
+            priority
           />
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">

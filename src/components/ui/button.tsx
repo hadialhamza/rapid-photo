@@ -13,7 +13,7 @@ export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
     | "ghost"
     | "link";
   size?: "default" | "sm" | "lg" | "icon";
-  icon?: React.ElementType;
+  icon?: React.ReactNode | React.ElementType;
 }
 
 const DefaultArrow = ({ className }: { className?: string }) => (
@@ -67,7 +67,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       const circleColor = variant === "default" ? "bg-primary" : "bg-secondary";
       const iconColorClass =
         variant === "default" ? "text-primary" : "text-secondary";
-      const IconComponent = icon || DefaultArrow;
+
+      const renderIcon = (extraClasses: string) => {
+        if (React.isValidElement(icon)) {
+          const element = icon as React.ReactElement<{ className?: string }>;
+          return React.cloneElement(element, {
+            className: cn(element.props.className, extraClasses),
+          });
+        }
+        if (icon) {
+          const IconComponent = icon as React.ElementType;
+          return <IconComponent className={extraClasses} />;
+        }
+        return <DefaultArrow className={extraClasses} />;
+      };
 
       return (
         <motion.button
@@ -81,14 +94,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           )}
           {...props}
         >
-          <IconComponent
-            className={cn(
+          {renderIcon(
+            cn(
               "absolute w-6 h-6 z-10 transition-all duration-500 ease-out",
               "-left-1/4 group-hover:left-4",
               iconColorClass,
               "group-hover:text-primary-foreground",
-            )}
-          />
+            ),
+          )}
 
           {/* Text Content */}
           <span className="relative z-10 -translate-x-3 transition-transform duration-500 ease-out group-hover:translate-x-3 group-hover:text-primary-foreground font-semibold flex items-center gap-2">
@@ -105,13 +118,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           />
 
           {/* Right Arrow (visible initially, goes right on hover) */}
-          <IconComponent
-            className={cn(
+          {renderIcon(
+            cn(
               "absolute w-6 h-6 z-10 transition-all duration-500 ease-out",
               "right-4 group-hover:-right-1/4",
               iconColorClass,
-            )}
-          />
+            ),
+          )}
         </motion.button>
       );
     }
