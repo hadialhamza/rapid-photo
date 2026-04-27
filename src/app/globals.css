@@ -1,17 +1,92 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════
+   RAPID PHOTO — Dark Theme Design System
+   ───────────────────────────────────────────────────────
+   Brand Palette:
+   Primary    → #ff3131 (Red)
+   Secondary  → #ff914d (Orange)
+   Background → #201f1f (Dark)
+   Gradient   → #ff3131 → #ff914d
+   ═══════════════════════════════════════════════════════ */
+
 :root {
-  --background: #09090b; /* zinc-950 */
-  --foreground: #fafafa; /* zinc-50 */
+  /* ── Background Scale ────────────────────────────── */
+  --background: #201f1f;
+  --surface: #292727;
+  --elevated: #333131;
+  --overlay: #3d3b3b;
+
+  /* ── Brand: Primary (Red) ────────────────────────── */
+  --primary: #ff3131;
+  --primary-hover: #e62b2b;
+  --primary-active: #cc2626;
+  --primary-foreground: #ffffff;
+
+  /* ── Brand: Secondary (Orange) ───────────────────── */
+  --secondary: #ff914d;
+  --secondary-hover: #e67e3e;
+  --secondary-active: #cc6f36;
+  --secondary-foreground: #ffffff;
+
+  /* ── Text ────────────────────────────────────────── */
+  --foreground: #ffffff;
+  --muted: #a8a3a3;
+  --subtle: #6b6666;
+
+  /* ── Border & Ring ──────────────────────────────── */
+  --border: #3d3b3b;
+  --border-hover: #524f4f;
+  --ring: #ff3131;
+
+  /* ── Status ──────────────────────────────────────── */
+  --success: #22c55e;
+  --warning: #eab308;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 @theme inline {
+  /* Backgrounds → bg-background, bg-surface, bg-elevated, bg-overlay */
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-overlay: var(--overlay);
+
+  /* Primary → bg-primary, text-primary, border-primary */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Secondary → bg-secondary, text-secondary, border-secondary */
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-active: var(--secondary-active);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Text → text-foreground, text-muted, text-subtle */
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+
+  /* Border → border-border, border-border-hover */
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-ring: var(--ring);
+
+  /* Status → text-success, bg-success, etc. */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Fonts */
   --font-sans: var(--font-inter);
   --font-heading: var(--font-outfit);
 }
 
+/* ── Base Styles ───────────────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -25,4 +100,34 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading), sans-serif;
+}
+
+/* ── Text Selection ────────────────────────────────── */
+::selection {
+  background: color-mix(in oklch, var(--primary) 25%, transparent);
+  color: var(--primary);
+}
+
+/* ── Custom Scrollbar ──────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* ── Focus Ring ────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }

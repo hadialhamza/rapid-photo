@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#201f1f]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -14,13 +14,16 @@ export function Navbar() {
             className="h-15 w-auto"
           />
         </Link>
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
-          <Link href="#features" className="hover:text-white transition-colors">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">
+          <Link
+            href="#features"
+            className="hover:text-foreground transition-colors"
+          >
             Features
           </Link>
           <Link
             href="#how-it-works"
-            className="hover:text-white transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             How it Works
           </Link>
