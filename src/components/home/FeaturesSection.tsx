@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "motion/react";
 import {
   Card,
   CardContent,
@@ -9,6 +6,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { ScanFace, ImageMinus, SunMedium, ShieldCheck } from "lucide-react";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
 
 const features = [
   {
@@ -52,25 +51,14 @@ export function FeaturesSection() {
       className="py-24 bg-surface/30 border-y border-border"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Everything you need for the perfect photo
-          </h2>
-          <p className="mt-4 text-lg text-muted">
-            Our intelligent pipeline ensures your photo meets strict government
-            requirements instantly.
-          </p>
-        </div>
+        <SectionHeader
+          title="Everything you need for the perfect photo"
+          description="Our intelligent pipeline ensures your photo meets strict government requirements instantly."
+        />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
+            <AnimatedSection key={index} delay={index * 0.1}>
               <Card className="h-full border-border bg-surface/50 shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div
@@ -88,7 +76,7 @@ export function FeaturesSection() {
                   </CardDescription>
                 </CardContent>
               </Card>
-            </motion.div>
+            </AnimatedSection>
           ))}
         </div>
       </div>

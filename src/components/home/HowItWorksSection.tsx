@@ -1,7 +1,6 @@
-"use client";
-
-import { motion } from "motion/react";
 import { Upload, Crop, Download } from "lucide-react";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
 
 const steps = [
   {
@@ -28,14 +27,10 @@ export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            How it works
-          </h2>
-          <p className="mt-4 text-lg text-muted">
-            Get your passport photo in less than a minute.
-          </p>
-        </div>
+        <SectionHeader
+          title="How it works"
+          description="Get your passport photo in less than a minute."
+        />
 
         <div className="relative max-w-4xl mx-auto">
           {/* Connecting line for desktop */}
@@ -43,12 +38,9 @@ export function HowItWorksSection() {
 
           <div className="grid md:grid-cols-3 gap-10">
             {steps.map((step, index) => (
-              <motion.div
+              <AnimatedSection
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
+                delay={index * 0.2}
                 className="relative flex flex-col items-center text-center"
               >
                 <div className="w-24 h-24 rounded-full bg-surface border-4 border-border flex items-center justify-center shadow-sm mb-6 relative">
@@ -61,7 +53,7 @@ export function HowItWorksSection() {
                   {step.title}
                 </h3>
                 <p className="text-muted leading-relaxed">{step.description}</p>
-              </motion.div>
+              </AnimatedSection>
             ))}
           </div>
         </div>
