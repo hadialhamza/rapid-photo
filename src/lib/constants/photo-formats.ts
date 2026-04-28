@@ -34,8 +34,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 450 / 570,
     defaultBgHex: "#FFFFFF",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.57,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
   {
     id: "in-visa",
@@ -51,8 +51,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 1,
     defaultBgHex: "#FFFFFF",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.57,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
   {
     id: "us-passport",
@@ -68,8 +68,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 1,
     defaultBgHex: "#FFFFFF",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.57,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
   {
     id: "uk-passport",
@@ -85,8 +85,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 413 / 531,
     defaultBgHex: "#D3D3D3",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.57,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
   {
     id: "schengen-visa",
@@ -102,8 +102,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 413 / 531,
     defaultBgHex: "#FFFFFF",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.57,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
   {
     id: "ca-passport",
@@ -119,8 +119,8 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     aspectRatio: 590 / 826,
     defaultBgHex: "#FFFFFF",
     dpi: 300,
-    headRatio: 0.65,
-    eyeLineRatio: 0.55,
+    headRatio: 0.50,
+    eyeLineRatio: 0.40,
   },
 ];
 
