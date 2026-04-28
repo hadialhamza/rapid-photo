@@ -4,6 +4,7 @@ import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
 import { PrivacySection } from "@/components/home/PrivacySection";
+import { FAQSection } from "@/components/home/FAQSection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <FeaturesSection />
       <BeforeAfterSection />
       <PrivacySection />
+      <FAQSection />
     </main>
   );
 }
