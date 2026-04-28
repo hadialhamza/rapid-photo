@@ -3,6 +3,7 @@ import { SupportedFormatsSection } from "@/components/home/SupportedFormatsSecti
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
+import { PrivacySection } from "@/components/home/PrivacySection";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <HowItWorksSection />
       <FeaturesSection />
       <BeforeAfterSection />
+      <PrivacySection />
     </main>
   );
 }
