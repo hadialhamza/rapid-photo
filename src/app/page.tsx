@@ -5,6 +5,7 @@ import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
 import { PrivacySection } from "@/components/home/PrivacySection";
 import { FAQSection } from "@/components/home/FAQSection";
+import { CTASection } from "@/components/home/CTASection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <BeforeAfterSection />
       <PrivacySection />
       <FAQSection />
+      <CTASection />
     </main>
   );
 }
