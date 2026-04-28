@@ -9,8 +9,6 @@ import { RotateCcw, Check, ZoomIn, ZoomOut, X } from "lucide-react";
 
 interface CropEditorProps {
   imageSrc: string;
-  imageWidth: number;
-  imageHeight: number;
   initialCropArea: CropArea;
   aspectRatio: number;
   onCropComplete: (croppedAreaPixels: Area) => void;
@@ -24,11 +22,17 @@ export function CropEditor({
   onCropComplete,
   onCancel,
 }: CropEditorProps) {
-  // Start with centered crop and zoom level 1
-  // react-easy-crop handles the initial fit automatically
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+
+  // Track initial crop area for "Reset to Auto" feature
+  const [initialAreaPixels] = useState<Area>({
+    x: initialCropArea.x,
+    y: initialCropArea.y,
+    width: initialCropArea.width,
+    height: initialCropArea.height,
+  });
 
   const onCropChange = useCallback(
     (_croppedArea: Area, croppedAreaPx: Area) => {
@@ -47,6 +51,10 @@ export function CropEditor({
     setCrop({ x: 0, y: 0 });
     setZoom(1);
   }, []);
+
+  const handleUseAutoCrop = useCallback(() => {
+    onCropComplete(initialAreaPixels);
+  }, [initialAreaPixels, onCropComplete]);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -117,6 +125,9 @@ export function CropEditor({
               icon={<RotateCcw className="h-4 w-4" />}
             >
               Reset
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleUseAutoCrop}>
+              Use Auto Crop
             </Button>
             <Button variant="ghost" size="sm" onClick={onCancel}>
               Cancel
