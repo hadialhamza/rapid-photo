@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { UploadCloud, CheckCircle2, FileImage } from "lucide-react";
 import { ParallaxHeroImages } from "@/components/ui/ParallaxHeroImages";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+import Link from "next/link";
 
 const parallaxImages = [
   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
@@ -44,14 +45,16 @@ export function HeroSection() {
             delay={0.4}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6"
           >
-            <Button
-              size="lg"
-              variant="default"
-              className="text-lg w-full sm:w-auto"
-              icon={<UploadCloud />}
-            >
-              Upload Photo
-            </Button>
+            <Link href="/editor">
+              <Button
+                size="lg"
+                variant="default"
+                className="text-lg w-full sm:w-auto"
+                icon={<UploadCloud />}
+              >
+                Upload Photo
+              </Button>
+            </Link>
             <Button
               size="lg"
               variant="secondary"

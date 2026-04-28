@@ -1,4 +1,5 @@
 export interface PhotoFormat {
+  // Display fields (used by SupportedFormatsSection)
   id: string;
   country: string;
   flag: string;
@@ -7,6 +8,15 @@ export interface PhotoFormat {
   dimensionsInches: string;
   resolutionPx: string;
   bgColor: string;
+
+  // Engine fields (used by processing pipeline)
+  widthPx: number;
+  heightPx: number;
+  aspectRatio: number;
+  defaultBgHex: string;
+  dpi: number;
+  headRatio: number;
+  eyeLineRatio: number;
 }
 
 export const SUPPORTED_FORMATS: PhotoFormat[] = [
@@ -19,6 +29,13 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "1.5 × 1.9 in",
     resolutionPx: "450 × 570 px",
     bgColor: "White / Blue",
+    widthPx: 450,
+    heightPx: 570,
+    aspectRatio: 450 / 570,
+    defaultBgHex: "#FFFFFF",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.57,
   },
   {
     id: "in-visa",
@@ -29,6 +46,13 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "2.0 × 2.0 in",
     resolutionPx: "600 × 600 px",
     bgColor: "White",
+    widthPx: 600,
+    heightPx: 600,
+    aspectRatio: 1,
+    defaultBgHex: "#FFFFFF",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.57,
   },
   {
     id: "us-passport",
@@ -39,6 +63,13 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "2.0 × 2.0 in",
     resolutionPx: "600 × 600 px",
     bgColor: "White",
+    widthPx: 600,
+    heightPx: 600,
+    aspectRatio: 1,
+    defaultBgHex: "#FFFFFF",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.57,
   },
   {
     id: "uk-passport",
@@ -49,6 +80,13 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "1.38 × 1.77 in",
     resolutionPx: "413 × 531 px",
     bgColor: "Light Grey",
+    widthPx: 413,
+    heightPx: 531,
+    aspectRatio: 413 / 531,
+    defaultBgHex: "#D3D3D3",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.57,
   },
   {
     id: "schengen-visa",
@@ -59,6 +97,13 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "1.38 × 1.77 in",
     resolutionPx: "413 × 531 px",
     bgColor: "Light / White",
+    widthPx: 413,
+    heightPx: 531,
+    aspectRatio: 413 / 531,
+    defaultBgHex: "#FFFFFF",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.57,
   },
   {
     id: "ca-passport",
@@ -69,5 +114,17 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     dimensionsInches: "2.0 × 2.75 in",
     resolutionPx: "590 × 826 px",
     bgColor: "White",
+    widthPx: 590,
+    heightPx: 826,
+    aspectRatio: 590 / 826,
+    defaultBgHex: "#FFFFFF",
+    dpi: 300,
+    headRatio: 0.65,
+    eyeLineRatio: 0.55,
   },
 ];
+
+/** Find a format by its ID. Returns undefined if not found. */
+export function getFormatById(id: string): PhotoFormat | undefined {
+  return SUPPORTED_FORMATS.find((f) => f.id === id);
+}
