@@ -2,6 +2,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { SupportedFormatsSection } from "@/components/home/SupportedFormatsSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
+import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <SupportedFormatsSection />
       <HowItWorksSection />
       <FeaturesSection />
+      <BeforeAfterSection />
     </main>
   );
 }
