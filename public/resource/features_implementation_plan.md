@@ -17,7 +17,7 @@
 > [!IMPORTANT]
 > **নতুন ডিপেন্ডেন্সি ইনস্টল করা হবে:**
 > - `@mediapipe/tasks-vision` — Face detection (bounding box, eye position)
-> - `@imgly/background-removal` — Client-side background removal (WASM model CDN থেকে auto-load হবে)
+> - `remove.bg API` — Server-side background removal (via API route)
 > - `react-easy-crop` — Crop UI with aspect ratio lock
 > - `sharp` — Server-side final image export (resize, JPEG compression)
 
@@ -125,24 +125,29 @@ MediaPipe ব্যবহার করে ফেস ডিটেকশন — bo
 
 ---
 
-### Phase 4: Background Removal (@imgly/background-removal)
+### Phase 4: Background Removal (remove.bg API)
 
-ক্রপ করা ইমেজ থেকে ব্যাকগ্রাউন্ড রিমুভ করা হবে।
+ক্রপ করা ইমেজ থেকে ব্যাকগ্রাউন্ড রিমুভ করা হবে। Remove.bg API সার্ভার সাইড রাউটের মাধ্যমে কল করা হবে যেন API key নিরাপদ থাকে।
 
 ---
 
-#### [NEW] `src/lib/engine/bg-remover.ts`
-- `@imgly/background-removal` wrapper
+#### [NEW] `src/app/api/remove-bg/route.ts`
+- Next.js Server Route Handler (POST)
+- `remove.bg` API integration (ব্যবহার করবে `REMOVE_BG_API_KEY` env variable)
+- Input: FormData containing the cropped image file
+- Output: Transparent PNG image response
+- Error handling: Rate limits, Invalid format, Missing API Key
+
+#### [NEW] `src/lib/engine/bg-removal-client.ts`
+- Client-side helper function
 - Input: cropped image `Blob`
 - Output: transparent PNG `Blob`
-- Progress callback support (for UI loading indicator)
-- **WASM model: CDN থেকে auto-load** (ডিফল্ট behavior, কোনো এক্সট্রা কনফিগ লাগবে না)
-- প্রথমবার ~5MB model ডাউনলোড হবে, ব্রাউজার ক্যাশ করবে
+- `fetch("/api/remove-bg")` দিয়ে সার্ভারে রিকোয়েস্ট পাঠাবে
+- Error handling and retry logic
 
 #### [NEW] `src/components/editor/ProcessingOverlay.tsx` — `"use client"`
 - Full-screen loading overlay (processing এর সময়)
 - Step indicator: "Detecting face..." → "Cropping..." → "Removing background..."
-- Progress bar (for bg removal which is the longest step)
 - Custom `Loader` কম্পোনেন্ট রিইউজ
 
 ---
@@ -279,8 +284,10 @@ src/
 │   │   ├── page.tsx              ← Editor route (/editor)
 │   │   └── loading.tsx           ← Editor loading state
 │   └── api/
-│       └── export/
-│           └── route.ts          ← Server-side Sharp export (JPEG default)
+│       ├── export/
+│       │   └── route.ts          ← Server-side Sharp export (JPEG default)
+│       └── remove-bg/
+│           └── route.ts          ← Server-side remove.bg API handler
 ├── components/
 │   ├── editor/
 │   │   ├── EditorWorkspace.tsx   ← Main orchestrator (client)
@@ -301,7 +308,7 @@ src/
     │   ├── face-detector.ts       ← MediaPipe wrapper
     │   ├── smart-crop.ts          ← Rule-based auto crop
     │   ├── crop-utils.ts          ← Canvas crop helper
-    │   ├── bg-remover.ts          ← @imgly wrapper (CDN model)
+    │   ├── bg-removal-client.ts   ← Client for remove-bg API route
     │   ├── edge-refiner.ts        ← Mask smoothing
     │   ├── bg-replacer.ts         ← Background compositing
     │   ├── lighting-corrector.ts  ← Brightness/contrast/gamma
@@ -320,7 +327,7 @@ src/
 | 1 | Editor Shell + Upload | 🔴 Critical | Medium |
 | 2 | Face Detection (MediaPipe) | 🔴 Critical | Medium |
 | 3 | Crop UI (react-easy-crop) | 🔴 Critical | Medium |
-| 4 | Background Removal (@imgly) | 🔴 Critical | Medium |
+| 4 | Background Removal (remove.bg API) | 🔴 Critical | Medium |
 | 5 | Edge Refinement + BG Replace | 🟡 Important | Medium |
 | 6 | Auto Lighting Correction | 🟡 Important | Medium |
 | 7 | Quality Validation | 🟢 Nice to have | Small |

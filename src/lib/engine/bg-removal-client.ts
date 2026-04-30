@@ -1,5 +1,5 @@
 const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 5000;
+const RETRY_DELAY_MS = 2000;
 
 // Send a cropped image to the server for background removal
 export async function removeBackground(imageBlob: Blob): Promise<Blob> {
@@ -19,26 +19,29 @@ export async function removeBackground(imageBlob: Blob): Promise<Blob> {
       return response.blob();
     }
 
-    // Model cold start — wait and retry
-    if (response.status === 503) {
-      const data = await response.json().catch(() => null);
-      if (data?.retryable && attempt < MAX_RETRIES - 1) {
-        await sleep(RETRY_DELAY_MS);
-        continue;
-      }
-    }
-
     const responseText = await response.text().catch(() => "");
+    let errorData: { error?: string } = {};
     try {
-      const errorData = JSON.parse(responseText);
+      errorData = JSON.parse(responseText);
       lastError = errorData.error || `Server error (${response.status})`;
     } catch {
-      lastError = `Server error (${response.status}). Please restart the dev server and try again.`;
+      lastError = `Server error (${response.status}). Please try again.`;
     }
+
+    if (response.status === 429) {
+      throw new Error(lastError || "All API limits reached. Please contact support.");
+    }
+    
+    // For 5xx errors we might want to retry
+    if (response.status >= 500 && attempt < MAX_RETRIES - 1) {
+      await sleep(RETRY_DELAY_MS);
+      continue;
+    }
+
     break;
   }
 
-  throw new Error(lastError || "Background removal failed after retries.");
+  throw new Error(lastError || "Background removal failed.");
 }
 
 function sleep(ms: number): Promise<void> {
