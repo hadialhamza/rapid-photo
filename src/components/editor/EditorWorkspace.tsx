@@ -22,9 +22,11 @@ import { FaceOverlay } from "@/components/editor/FaceOverlay";
 import { CropEditor } from "@/components/editor/CropEditor";
 import { BackgroundPicker } from "@/components/editor/BackgroundPicker";
 import { EnhanceToggle } from "@/components/editor/EnhanceToggle";
+import { NoisewareToggle } from "@/components/editor/NoisewareToggle";
 import { FinalPreview } from "@/components/editor/FinalPreview";
 import { CompareSlider } from "@/components/ui/CompareSlider";
 import { enhanceLighting } from "@/lib/engine/lighting-corrector";
+import { applyNoisewareFilter } from "@/lib/engine/noiseware-filter";
 import {
   ArrowLeft,
   RotateCcw,
@@ -95,6 +97,10 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
   // Phase 6 state (Auto Lighting Correction)
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+
+  // Phase 9 state (Noiseware Filter)
+  const [isSmoothed, setIsSmoothed] = useState(false);
+  const [isSmoothing, setIsSmoothing] = useState(false);
 
   const isMounted = useRef(false);
   const loadingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -204,6 +210,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     setIsBgRemoved(false);
     setBgColor("#FFFFFF");
     setIsEnhanced(false);
+    setIsSmoothed(false);
     setStep("upload");
   }, [uploadedImageUrl, croppedImageUrl, unenhancedImageUrl, finalImageUrl]);
 
@@ -232,6 +239,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
         setUnenhancedImageUrl(null);
         setFinalImageUrl(null);
         setIsEnhanced(false);
+        setIsSmoothed(false);
 
         setCroppedImageUrl(url);
         setStep("upload"); // Back to preview
@@ -245,29 +253,41 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
   );
 
   // Helper to apply enhancement state
-  const updateFinalImage = useCallback(async (baseBlob: Blob, enhancedState: boolean) => {
+  const applyFilters = useCallback(async (baseBlob: Blob, enhancedState: boolean, smoothedState: boolean) => {
+    setIsEnhancing(true);
+    try {
+      let currentBlob = baseBlob;
+      if (enhancedState) {
+        currentBlob = await enhanceLighting(currentBlob);
+      }
+      if (smoothedState) {
+        setIsSmoothing(true);
+        currentBlob = await applyNoisewareFilter(currentBlob);
+        setIsSmoothing(false);
+      }
+      setFinalImageUrl(URL.createObjectURL(currentBlob));
+    } catch (err) {
+      console.error("Filter pipeline failed:", err);
+      setDetectionError("Failed to apply filters. Showing original.");
+      setFinalImageUrl(URL.createObjectURL(baseBlob));
+      setIsSmoothing(false);
+    } finally {
+      setIsEnhancing(false);
+    }
+  }, []);
+
+  const updateFinalImage = useCallback(async (baseBlob: Blob, enhancedState: boolean, smoothedState: boolean) => {
     const baseUrl = URL.createObjectURL(baseBlob);
     
     // Revoke old unenhanced image if it's different from the new one
-    // (We'll just set it, the browser will garbage collect eventually or we can be stricter)
     setUnenhancedImageUrl(baseUrl);
 
-    if (enhancedState) {
-      setIsEnhancing(true);
-      try {
-        const enhancedBlob = await enhanceLighting(baseBlob);
-        setFinalImageUrl(URL.createObjectURL(enhancedBlob));
-      } catch (err) {
-        console.error("Lighting enhancement failed:", err);
-        setDetectionError("Auto Enhance failed. Showing original.");
-        setFinalImageUrl(baseUrl);
-      } finally {
-        setIsEnhancing(false);
-      }
+    if (enhancedState || smoothedState) {
+      await applyFilters(baseBlob, enhancedState, smoothedState);
     } else {
       setFinalImageUrl(baseUrl);
     }
-  }, []);
+  }, [applyFilters]);
 
   // ─── Background Removal (HF API) ────────────────────────
   const handleRemoveBg = useCallback(async () => {
@@ -302,7 +322,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
         selectedFormat.heightPx,
       );
 
-      await updateFinalImage(composited, isEnhanced);
+      await updateFinalImage(composited, isEnhanced, isSmoothed);
     } catch (err: unknown) {
       console.error("Background removal failed:", err);
       const message =
@@ -319,6 +339,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     startLoadingMessages,
     stopLoadingMessages,
     isEnhanced,
+    isSmoothed,
     updateFinalImage,
   ]);
 
@@ -337,12 +358,12 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
           selectedFormat.heightPx,
         );
 
-        await updateFinalImage(composited, isEnhanced);
+        await updateFinalImage(composited, isEnhanced, isSmoothed);
       } catch (err) {
         console.error("Failed to apply background color:", err);
       }
     },
-    [transparentBlob, selectedFormat, isEnhanced, updateFinalImage],
+    [transparentBlob, selectedFormat, isEnhanced, isSmoothed, updateFinalImage],
   );
 
   // ─── Restore Original Background ────────────────────────
@@ -353,19 +374,12 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     setFinalImageUrl(null);
   }, []);
 
-  // ─── Toggle Enhance ───────────────────────────────────────
-  const handleToggleEnhance = useCallback(async (state: boolean) => {
-    setIsEnhanced(state);
-    
-    // We need to apply it on the current working blob.
-    // If bg is removed, we re-apply on the transparent blob + bg color.
-    // Wait, the easiest way is to re-run the compositing or just use the unenhanced URL to get the blob.
-    if (!unenhancedImageUrl && !croppedImageUrl) return;
-
+  // ─── Toggle Filters ───────────────────────────────────────
+  const applyFiltersFromUrl = useCallback(async (enhancedState: boolean, smoothedState: boolean) => {
     const sourceUrl = unenhancedImageUrl || croppedImageUrl;
     if (!sourceUrl) return;
 
-    if (!state) {
+    if (!enhancedState && !smoothedState) {
       setFinalImageUrl(sourceUrl);
       return;
     }
@@ -375,16 +389,35 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     try {
       const response = await fetch(sourceUrl);
       const blob = await response.blob();
-      const enhancedBlob = await enhanceLighting(blob);
-      setFinalImageUrl(URL.createObjectURL(enhancedBlob));
+      
+      let currentBlob = blob;
+      if (enhancedState) {
+        currentBlob = await enhanceLighting(currentBlob);
+      }
+      if (smoothedState) {
+        setIsSmoothing(true);
+        currentBlob = await applyNoisewareFilter(currentBlob);
+        setIsSmoothing(false);
+      }
+      setFinalImageUrl(URL.createObjectURL(currentBlob));
     } catch (err) {
       console.error("Enhancement failed:", err);
-      setIsEnhanced(false);
-      setDetectionError("Failed to apply auto-enhancement.");
+      setDetectionError("Failed to apply filters.");
+      setIsSmoothing(false);
     } finally {
       setIsEnhancing(false);
     }
   }, [unenhancedImageUrl, croppedImageUrl]);
+
+  const handleToggleEnhance = useCallback(async (state: boolean) => {
+    setIsEnhanced(state);
+    await applyFiltersFromUrl(state, isSmoothed);
+  }, [applyFiltersFromUrl, isSmoothed]);
+
+  const handleToggleSmooth = useCallback(async (state: boolean) => {
+    setIsSmoothed(state);
+    await applyFiltersFromUrl(isEnhanced, state);
+  }, [applyFiltersFromUrl, isEnhanced]);
 
   // ─── Determine preview image ─────────────────────────────
   const previewSrc = finalImageUrl || croppedImageUrl || uploadedImageUrl;
@@ -475,11 +508,16 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
 
             {/* Enhance Toggle */}
             {croppedImageUrl && (
-              <section className="animate-in fade-in slide-in-from-left-4 duration-500 delay-300">
+              <section className="animate-in fade-in slide-in-from-left-4 duration-500 delay-300 flex flex-col gap-4">
                 <EnhanceToggle
                   isEnhanced={isEnhanced}
                   onToggle={handleToggleEnhance}
-                  isProcessing={isEnhancing}
+                  isProcessing={isEnhancing && !isSmoothing}
+                />
+                <NoisewareToggle
+                  isSmoothed={isSmoothed}
+                  onToggle={handleToggleSmooth}
+                  isProcessing={isSmoothing}
                 />
               </section>
             )}
@@ -520,7 +558,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                   <div className="space-y-6">
                     {/* ─── Preview Box ──────────────────── */}
                     <div className="relative aspect-4/3 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner">
-                      {isEnhanced && (unenhancedImageUrl || croppedImageUrl) && finalImageUrl ? (
+                      {(isEnhanced || isSmoothed) && (unenhancedImageUrl || croppedImageUrl) && finalImageUrl ? (
                         <CompareSlider
                           beforeImage={(unenhancedImageUrl || croppedImageUrl) as string}
                           afterImage={finalImageUrl}
