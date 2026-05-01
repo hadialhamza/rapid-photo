@@ -22,6 +22,7 @@ import { CropEditor } from "@/components/editor/CropEditor";
 import { EditorToolbar } from "@/components/editor/EditorToolbar";
 import { EditorSidebar } from "@/components/editor/EditorSidebar";
 import { FinalPreview } from "@/components/editor/FinalPreview";
+import { PrintLayoutCart } from "@/components/editor/PrintLayoutCart";
 import { CompareSlider } from "@/components/ui/CompareSlider";
 import { enhanceLighting } from "@/lib/engine/lighting-corrector";
 import { applyNoisewareFilter } from "@/lib/engine/noiseware-filter";
@@ -420,7 +421,9 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
 
   // ─── Render ──────────────────────────────────────────────
   return (
-    <div className="min-h-[80vh] w-full bg-background">
+    <>
+      <PrintLayoutCart />
+      <div className="min-h-[80vh] w-full bg-background">
       <div className="container mx-auto px-4 py-8">
         {!step.includes("export") && (
           <EditorToolbar
@@ -436,6 +439,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
             finalImageUrl={previewSrc}
             selectedFormat={selectedFormat}
             onBack={() => setStep("upload")}
+            onStartOver={handleStartOver}
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -619,7 +623,8 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

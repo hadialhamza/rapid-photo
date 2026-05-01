@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowLeft, Download, AlertCircle } from "lucide-react";
+import { ArrowLeft, Download, AlertCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CompareSlider } from "@/components/ui/CompareSlider";
 import { PhotoFormat } from "@/lib/constants/photo-formats";
 import { downloadFinalPhoto } from "@/lib/engine/export-client";
+import { usePrintCartStore } from "@/store/print-cart-store";
 
 interface FinalPreviewProps {
   originalImageUrl: string;
   finalImageUrl: string;
   selectedFormat: PhotoFormat;
   onBack: () => void;
+  onStartOver: () => void;
 }
 
 export function FinalPreview({
@@ -19,9 +21,14 @@ export function FinalPreview({
   finalImageUrl,
   selectedFormat,
   onBack,
+  onStartOver,
 }: FinalPreviewProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copies, setCopies] = useState(4);
+  const [addedToCart, setAddedToCart] = useState(false);
+  
+  const addItem = usePrintCartStore((state) => state.addItem);
 
   const handleDownload = async () => {
     setIsExporting(true);
@@ -44,12 +51,23 @@ export function FinalPreview({
     }
   };
 
+  const handleAddToCart = async () => {
+    await addItem(finalImageUrl, selectedFormat, copies);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 3000);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={onBack} className="text-muted-foreground gap-2">
-          <ArrowLeft className="w-4 h-4" /> Back to Editor
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={onBack} className="text-muted-foreground gap-2">
+            <ArrowLeft className="w-4 h-4" /> Back to Editor
+          </Button>
+          <Button variant="ghost" onClick={onStartOver} className="text-muted-foreground gap-2">
+            <RotateCcw className="w-4 h-4" /> Start Over
+          </Button>
+        </div>
         <h2 className="text-xl font-semibold">Review & Export</h2>
       </div>
 
@@ -122,6 +140,41 @@ export function FinalPreview({
               </>
             )}
           </Button>
+
+          {/* Add to Print Layout Cart */}
+          <div className="pt-6 border-t border-border/50 space-y-4">
+            <h3 className="text-lg font-medium">Print Layout</h3>
+            <p className="text-sm text-muted-foreground">
+              Add multiple photos to create a print-ready A4 PDF.
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center border border-border rounded-lg bg-surface h-12">
+                <button
+                  type="button"
+                  onClick={() => setCopies(Math.max(1, copies - 1))}
+                  className="px-4 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  -
+                </button>
+                <span className="w-8 text-center font-medium">{copies}</span>
+                <button
+                  type="button"
+                  onClick={() => setCopies(Math.min(30, copies + 1))}
+                  className="px-4 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  +
+                </button>
+              </div>
+              <Button
+                variant={addedToCart ? "secondary" : "outline"}
+                className="flex-1 h-12"
+                onClick={handleAddToCart}
+                disabled={addedToCart}
+              >
+                {addedToCart ? "Added to Layout!" : "Add to Print Layout"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
