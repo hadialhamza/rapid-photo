@@ -26,11 +26,11 @@ export function HeroSection() {
             className="mb-6 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20"
           >
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
-            100% Free & Local Processing
+            100% Free & High Quality Photos
           </AnimatedSection>
 
-          <h1 className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            Create Passport-Grade Photos{" "}
+          <h1 className="font-heading text-5xl font-extrabold text-foreground sm:text-6xl lg:text-7xl">
+            Create Print-Ready Perfect Photos{" "}
             <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               Instantly
             </span>
@@ -55,14 +55,16 @@ export function HeroSection() {
                 Upload Photo
               </Button>
             </Link>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="text-lg w-full sm:w-auto"
-              icon={<FileImage />}
-            >
-              View Formats
-            </Button>
+            <Link href="#formats">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-lg w-full sm:w-auto"
+                icon={<FileImage />}
+              >
+                View Formats
+              </Button>
+            </Link>
           </AnimatedSection>
 
           <AnimatedSection

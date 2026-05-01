@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 export function Navbar() {
   return (
@@ -15,20 +16,27 @@ export function Navbar() {
             priority
           />
         </Link>
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">
-          <Link
-            href="#features"
-            className="hover:text-foreground transition-colors"
-          >
-            Features
+        <div className="flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">
+            <Link
+              href="#features"
+              className="hover:text-foreground transition-colors"
+            >
+              Features
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="hover:text-foreground transition-colors"
+            >
+              How it Works
+            </Link>
+          </nav>
+          <Link href="/editor">
+            <Button className="font-semibold">
+              <span className="px-2">Get Started</span>
+            </Button>
           </Link>
-          <Link
-            href="#how-it-works"
-            className="hover:text-foreground transition-colors"
-          >
-            How it Works
-          </Link>
-        </nav>
+        </div>
       </div>
     </header>
   );

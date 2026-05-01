@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export function SupportedFormatsSection() {
   return (
-    <section className="bg-surface/50 py-24 sm:py-32">
+    <section id="formats" className="bg-surface/50 py-24 sm:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
           <SectionHeader
