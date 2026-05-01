@@ -16,7 +16,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "Rapid Photo",
-  description: "AI-assisted passport photo generator",
+  description: "AI-assisted official passport and visa photo generator",
 };
 
 export default function RootLayout({
