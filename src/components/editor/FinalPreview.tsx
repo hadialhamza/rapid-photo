@@ -82,7 +82,7 @@ export function FinalPreview({
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left: Preview */}
         <div className="space-y-4">
-          <div className="relative aspect-4/3 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner flex items-center justify-center">
+          <div className="relative h-120 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner flex items-center justify-center">
             {/* Note: CompareSlider handles the object-cover stretching, we wrap it to maintain aspect ratio and containment */}
             <CompareSlider
               beforeImage={originalImageUrl}

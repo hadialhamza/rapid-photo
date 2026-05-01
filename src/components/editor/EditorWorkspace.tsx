@@ -470,7 +470,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
             {!uploadedImageUrl ? (
               <UploadZone
                 onImageLoaded={handleImageLoaded}
-                className="min-h-100"
+                className="h-120"
               />
             ) : (
               <div className="space-y-6">
@@ -486,7 +486,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                 ) : (
                   <div className="space-y-6">
                     {/* ─── Preview Box ──────────────────── */}
-                    <div className="relative aspect-4/3 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner">
+                    <div className="relative h-120 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner">
                       {(isEnhanced || isSmoothed) && (unenhancedImageUrl || croppedImageUrl) && finalImageUrl ? (
                         <CompareSlider
                           beforeImage={(unenhancedImageUrl || croppedImageUrl) as string}

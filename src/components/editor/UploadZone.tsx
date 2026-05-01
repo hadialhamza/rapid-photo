@@ -68,7 +68,7 @@ export function UploadZone({ onImageLoaded, className }: UploadZoneProps) {
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
         className={cn(
-          "relative flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-12 cursor-pointer transition-all duration-300",
+          "relative h-full flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-12 cursor-pointer transition-all duration-300",
           isDragOver
             ? "border-primary bg-primary/5 scale-[1.01]"
             : "border-border bg-surface hover:border-border-hover hover:bg-elevated",

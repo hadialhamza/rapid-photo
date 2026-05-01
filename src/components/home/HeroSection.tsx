@@ -29,8 +29,8 @@ export function HeroSection() {
             100% Free & High Quality Photos
           </AnimatedSection>
 
-          <h1 className="font-heading text-5xl font-extrabold text-foreground sm:text-6xl lg:text-7xl">
-            Create Print-Ready Perfect Photos{" "}
+          <h1 className="font-heading text-5xl font-extrabold text-foreground tracking-wide sm:text-6xl lg:text-7xl">
+            Create Print-Ready Official Photos{" "}
             <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               Instantly
             </span>
