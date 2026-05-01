@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "Terms & Conditions",
+  description: "Read the terms and conditions for using the Rapid Photo platform.",
+};
 
 export default function TermsPage() {
   const sections = [

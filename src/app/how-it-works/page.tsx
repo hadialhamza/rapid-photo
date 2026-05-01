@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "How It Works",
+  description: "Learn how Rapid Photo uses AI to transform your selfies into professional passport and visa photos in 6 simple steps.",
+};
 import {
   Upload,
   Scan,

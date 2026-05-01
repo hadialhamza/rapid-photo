@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "Features",
+  description: "Explore the cutting-edge AI technology behind Rapid Photo, including face detection, smart cropping, and print layouts.",
+};
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { 
   ScanFace, 

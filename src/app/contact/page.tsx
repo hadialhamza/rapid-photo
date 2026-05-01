@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Get in touch with MD HADI AL HAMZA, the developer behind Rapid Photo.",
+};
 import {
   Mail,
   Phone,
