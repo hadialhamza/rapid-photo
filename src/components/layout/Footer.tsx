@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-2 space-y-6">
             <Link href="/" className="inline-block">
               <Image
-                src="/logo/rp-logo.png"
+                src="/logo/rp-logo2.png"
                 alt="Rapid Photo Logo"
                 width={120}
                 height={60}

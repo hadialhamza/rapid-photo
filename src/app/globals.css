@@ -6,16 +6,16 @@
    Brand Palette:
    Primary    → #ff3131 (Red)
    Secondary  → #ff914d (Orange)
-   Background → #201f1f (Dark)
+   Background → #020617 (Slate 950)
    Gradient   → #ff3131 → #ff914d
    ═══════════════════════════════════════════════════════ */
 
 :root {
   /* ── Background Scale ────────────────────────────── */
-  --background: #201f1f;
-  --surface: #292727;
-  --elevated: #333131;
-  --overlay: #3d3b3b;
+  --background: #020617;
+  --surface: #0f172a;
+  --elevated: #1e293b;
+  --overlay: #334155;
 
   /* ── Brand: Primary (Red) ────────────────────────── */
   --primary: #ff3131;
@@ -31,12 +31,12 @@
 
   /* ── Text ────────────────────────────────────────── */
   --foreground: #ffffff;
-  --muted: #a8a3a3;
-  --subtle: #6b6666;
+  --muted: #94a3b8;
+  --subtle: #64748b;
 
   /* ── Border & Ring ──────────────────────────────── */
-  --border: #3d3b3b;
-  --border-hover: #524f4f;
+  --border: #1e293b;
+  --border-hover: #475569;
   --ring: #ff3131;
 
   /* ── Status ──────────────────────────────────────── */

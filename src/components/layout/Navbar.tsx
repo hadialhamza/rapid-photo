@@ -7,7 +7,7 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo/rp-logo.png"
+            src="/logo/rp-logo2.png"
             alt="Rapid Photo Logo"
             width={120}
             height={60}
