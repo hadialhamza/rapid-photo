@@ -56,7 +56,7 @@ export function EditorMain({
   handleStartOver,
 }: EditorMainProps) {
   if (!uploadedImageUrl) {
-    return <UploadZone onImageLoaded={handleImageLoaded} className="h-120" />;
+    return <UploadZone onImageLoaded={handleImageLoaded} className="min-h-120" />;
   }
 
   return (
