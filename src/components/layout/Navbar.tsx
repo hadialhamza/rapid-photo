@@ -25,7 +25,7 @@ export function Navbar() {
               Features
             </Link>
             <Link
-              href="#how-it-works"
+              href="/how-it-works"
               className="hover:text-foreground transition-colors"
             >
               How it Works

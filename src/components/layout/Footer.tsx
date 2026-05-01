@@ -59,7 +59,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#how-it-works"
+                  href="/how-it-works"
                   className="text-muted hover:text-primary transition-colors"
                 >
                   How it Works
