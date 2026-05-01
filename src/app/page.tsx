@@ -3,8 +3,6 @@ import { SupportedFormatsSection } from "@/components/home/SupportedFormatsSecti
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
-import { PrivacySection } from "@/components/home/PrivacySection";
-import { FAQSection } from "@/components/home/FAQSection";
 import { CTASection } from "@/components/home/CTASection";
 
 export default function Home() {
@@ -15,8 +13,6 @@ export default function Home() {
       <HowItWorksSection />
       <FeaturesSection />
       <BeforeAfterSection />
-      <PrivacySection />
-      <FAQSection />
       <CTASection />
     </main>
   );
