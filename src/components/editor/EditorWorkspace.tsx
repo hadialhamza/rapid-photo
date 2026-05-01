@@ -12,15 +12,15 @@ import {
   type FaceDetectionResult,
 } from "@/lib/engine/face-detector";
 import { calculateSmartCrop, type CropArea } from "@/lib/engine/smart-crop";
-import {
-  cropAndResizeToTarget,
-  applyBackgroundColor,
-} from "@/lib/engine/crop-utils";
+import { cropAndResizeToTarget } from "@/lib/engine/crop-utils";
+import { refineEdges } from "@/lib/engine/edge-refiner";
+import { replaceBackground } from "@/lib/engine/bg-replacer";
 import { removeBackground } from "@/lib/engine/bg-removal-client";
 import { FormatSelector } from "@/components/editor/FormatSelector";
 import { UploadZone } from "@/components/editor/UploadZone";
 import { FaceOverlay } from "@/components/editor/FaceOverlay";
 import { CropEditor } from "@/components/editor/CropEditor";
+import { BackgroundPicker } from "@/components/editor/BackgroundPicker";
 import {
   ArrowLeft,
   RotateCcw,
@@ -245,18 +245,21 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
       const croppedResponse = await fetch(croppedImageUrl);
       const croppedBlob = await croppedResponse.blob();
 
-      // Call server API → HF RMBG-2.0
+      // Call server API → remove.bg
       const transparentResult = await removeBackground(croppedBlob);
 
       if (!isMounted.current) return;
 
+      // Refine edges
+      const refinedResult = await refineEdges(transparentResult);
+
       // Cache transparent blob for color changes
-      setTransparentBlob(transparentResult);
+      setTransparentBlob(refinedResult);
       setIsBgRemoved(true);
 
       // Apply default background color
-      const composited = await applyBackgroundColor(
-        transparentResult,
+      const composited = await replaceBackground(
+        refinedResult,
         bgColor,
         selectedFormat.widthPx,
         selectedFormat.heightPx,
@@ -290,7 +293,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
       if (!transparentBlob) return;
 
       try {
-        const composited = await applyBackgroundColor(
+        const composited = await replaceBackground(
           transparentBlob,
           color,
           selectedFormat.widthPx,
@@ -382,44 +385,12 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                       Remove Background
                     </Button>
                   ) : (
-                    <div className="space-y-4">
-                      {/* Color Presets */}
-                      <div className="grid grid-cols-5 gap-2">
-                        {[
-                          "#FFFFFF",
-                          "#3b82f6",
-                          "#ef4444",
-                          "#22c55e",
-                          "#000000",
-                        ].map((color) => (
-                          <button
-                            key={color}
-                            className={`h-8 w-full rounded-md border-2 transition-all ${
-                              bgColor === color
-                                ? "border-primary scale-110 shadow-md"
-                                : "border-transparent hover:scale-105"
-                            }`}
-                            style={{ backgroundColor: color }}
-                            onClick={() => handleBgColorChange(color)}
-                          />
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="text-[10px] text-subtle">
-                          Selected:{" "}
-                          <span className="font-mono uppercase">{bgColor}</span>
-                        </p>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-[10px] px-2"
-                          onClick={handleRestoreOriginal}
-                        >
-                          Restore Original
-                        </Button>
-                      </div>
-                    </div>
+                    <BackgroundPicker
+                      selectedFormat={selectedFormat}
+                      currentBgColor={bgColor}
+                      onBgColorChange={handleBgColorChange}
+                      onRestoreOriginal={handleRestoreOriginal}
+                    />
                   )}
                 </div>
               </section>
