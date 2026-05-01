@@ -16,24 +16,20 @@ import { cropAndResizeToTarget } from "@/lib/engine/crop-utils";
 import { refineEdges } from "@/lib/engine/edge-refiner";
 import { replaceBackground } from "@/lib/engine/bg-replacer";
 import { removeBackground } from "@/lib/engine/bg-removal-client";
-import { FormatSelector } from "@/components/editor/FormatSelector";
 import { UploadZone } from "@/components/editor/UploadZone";
 import { FaceOverlay } from "@/components/editor/FaceOverlay";
 import { CropEditor } from "@/components/editor/CropEditor";
-import { BackgroundPicker } from "@/components/editor/BackgroundPicker";
-import { EnhanceToggle } from "@/components/editor/EnhanceToggle";
-import { NoisewareToggle } from "@/components/editor/NoisewareToggle";
+import { EditorToolbar } from "@/components/editor/EditorToolbar";
+import { EditorSidebar } from "@/components/editor/EditorSidebar";
 import { FinalPreview } from "@/components/editor/FinalPreview";
 import { CompareSlider } from "@/components/ui/CompareSlider";
 import { enhanceLighting } from "@/lib/engine/lighting-corrector";
 import { applyNoisewareFilter } from "@/lib/engine/noiseware-filter";
 import {
   ArrowLeft,
-  RotateCcw,
-  AlertCircle,
   CheckCircle2,
   Crop as CropIcon,
-  Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
@@ -426,26 +422,13 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
   return (
     <div className="min-h-[80vh] w-full bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Photo Editor</h1>
-            <p className="text-sm text-muted">
-              {selectedFormat.flag} {selectedFormat.country} •{" "}
-              {selectedFormat.widthPx}×{selectedFormat.heightPx}px
-            </p>
-          </div>
-          {uploadedImageUrl && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleStartOver}
-              icon={<RotateCcw className="h-4 w-4" />}
-            >
-              Start Over
-            </Button>
-          )}
-        </div>
+        {!step.includes("export") && (
+          <EditorToolbar
+            selectedFormat={selectedFormat}
+            showStartOver={!!uploadedImageUrl}
+            onStartOver={handleStartOver}
+          />
+        )}
 
         {step === "export" && previewSrc && uploadedImageUrl ? (
           <FinalPreview
@@ -457,84 +440,26 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* ─── Sidebar ──────────────────────────────────── */}
-          <div className="space-y-6">
-            <section>
-              <h3 className="text-xs font-semibold uppercase text-muted mb-3">
-                Target Format
-              </h3>
-              <FormatSelector
-                selectedFormatId={selectedFormat.id}
-                onSelect={setSelectedFormat}
+            <div className="lg:col-span-1">
+              <EditorSidebar
+                selectedFormat={selectedFormat}
+                onFormatSelect={setSelectedFormat}
+                croppedImageUrl={croppedImageUrl}
+                isBgRemoved={isBgRemoved}
+                bgProcessing={bgProcessing}
+                bgColor={bgColor}
+                onRemoveBg={handleRemoveBg}
+                onBgColorChange={handleBgColorChange}
+                onRestoreOriginal={handleRestoreOriginal}
+                isEnhanced={isEnhanced}
+                isEnhancing={isEnhancing}
+                onToggleEnhance={handleToggleEnhance}
+                isSmoothed={isSmoothed}
+                isSmoothing={isSmoothing}
+                onToggleSmooth={handleToggleSmooth}
+                onContinueToExport={() => setStep("export")}
               />
-            </section>
-
-            {/* Background Settings — shown after crop */}
-            {croppedImageUrl && (
-              <section className="animate-in fade-in slide-in-from-left-4 duration-500 delay-200">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-semibold uppercase text-muted">
-                    Background
-                  </h3>
-                  {isBgRemoved && (
-                    <span className="text-[10px] bg-success/10 text-success px-1.5 py-0.5 rounded-full font-bold">
-                      ACTIVE
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-4 rounded-xl border border-border bg-surface p-4">
-                  {!isBgRemoved ? (
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="w-full"
-                      onClick={handleRemoveBg}
-                      disabled={bgProcessing}
-                      icon={<Sparkles className="h-4 w-4" />}
-                    >
-                      Remove Background
-                    </Button>
-                  ) : (
-                    <BackgroundPicker
-                      selectedFormat={selectedFormat}
-                      currentBgColor={bgColor}
-                      onBgColorChange={handleBgColorChange}
-                      onRestoreOriginal={handleRestoreOriginal}
-                    />
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* Enhance Toggle */}
-            {croppedImageUrl && (
-              <section className="animate-in fade-in slide-in-from-left-4 duration-500 delay-300 flex flex-col gap-4">
-                <EnhanceToggle
-                  isEnhanced={isEnhanced}
-                  onToggle={handleToggleEnhance}
-                  isProcessing={isEnhancing && !isSmoothing}
-                />
-                <NoisewareToggle
-                  isSmoothed={isSmoothed}
-                  onToggle={handleToggleSmooth}
-                  isProcessing={isSmoothing}
-                />
-              </section>
-            )}
-
-            {/* Export Action */}
-            {croppedImageUrl && (
-              <section className="pt-4 border-t border-border/50 animate-in fade-in slide-in-from-left-4 duration-500 delay-500">
-                <Button 
-                  className="w-full shadow-md" 
-                  size="lg" 
-                  onClick={() => setStep("export")}
-                >
-                  Continue to Export
-                </Button>
-              </section>
-            )}
-          </div>
+            </div>
 
           {/* ─── Editor Main ──────────────────────────────── */}
           <div className="lg:col-span-2">
