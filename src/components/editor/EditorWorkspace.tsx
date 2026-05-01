@@ -21,6 +21,9 @@ import { UploadZone } from "@/components/editor/UploadZone";
 import { FaceOverlay } from "@/components/editor/FaceOverlay";
 import { CropEditor } from "@/components/editor/CropEditor";
 import { BackgroundPicker } from "@/components/editor/BackgroundPicker";
+import { EnhanceToggle } from "@/components/editor/EnhanceToggle";
+import { CompareSlider } from "@/components/ui/CompareSlider";
+import { enhanceLighting } from "@/lib/engine/lighting-corrector";
 import {
   ArrowLeft,
   RotateCcw,
@@ -83,9 +86,14 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
   const [isBgRemoved, setIsBgRemoved] = useState(false);
   const [bgColor, setBgColor] = useState("#FFFFFF");
   const [transparentBlob, setTransparentBlob] = useState<Blob | null>(null);
+  const [unenhancedImageUrl, setUnenhancedImageUrl] = useState<string | null>(null);
   const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
   const [bgProcessing, setBgProcessing] = useState(false);
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
+
+  // Phase 6 state (Auto Lighting Correction)
+  const [isEnhanced, setIsEnhanced] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
 
   const isMounted = useRef(false);
   const loadingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -180,11 +188,13 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
   const handleStartOver = useCallback(() => {
     if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
     if (croppedImageUrl) URL.revokeObjectURL(croppedImageUrl);
+    if (unenhancedImageUrl) URL.revokeObjectURL(unenhancedImageUrl);
     if (finalImageUrl) URL.revokeObjectURL(finalImageUrl);
 
     setUploadedImageUrl(null);
     setCroppedImageUrl(null);
     setTransparentBlob(null);
+    setUnenhancedImageUrl(null);
     setFinalImageUrl(null);
     setFaceResult(null);
     setCropArea(null);
@@ -192,8 +202,9 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     setDetectionError(null);
     setIsBgRemoved(false);
     setBgColor("#FFFFFF");
+    setIsEnhanced(false);
     setStep("upload");
-  }, [uploadedImageUrl, croppedImageUrl, finalImageUrl]);
+  }, [uploadedImageUrl, croppedImageUrl, unenhancedImageUrl, finalImageUrl]);
 
   // ─── Crop Complete Handler ───────────────────────────────
   const handleCropComplete = useCallback(
@@ -215,11 +226,11 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
 
         if (croppedImageUrl) URL.revokeObjectURL(croppedImageUrl);
 
-        // Reset bg state when re-cropping
-        setTransparentBlob(null);
-        setIsBgRemoved(false);
+        if (unenhancedImageUrl) URL.revokeObjectURL(unenhancedImageUrl);
         if (finalImageUrl) URL.revokeObjectURL(finalImageUrl);
+        setUnenhancedImageUrl(null);
         setFinalImageUrl(null);
+        setIsEnhanced(false);
 
         setCroppedImageUrl(url);
         setStep("upload"); // Back to preview
@@ -229,8 +240,33 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
         setStep("cropping");
       }
     },
-    [uploadedImageUrl, croppedImageUrl, finalImageUrl, selectedFormat],
+    [uploadedImageUrl, croppedImageUrl, unenhancedImageUrl, finalImageUrl, selectedFormat],
   );
+
+  // Helper to apply enhancement state
+  const updateFinalImage = useCallback(async (baseBlob: Blob, enhancedState: boolean) => {
+    const baseUrl = URL.createObjectURL(baseBlob);
+    
+    // Revoke old unenhanced image if it's different from the new one
+    // (We'll just set it, the browser will garbage collect eventually or we can be stricter)
+    setUnenhancedImageUrl(baseUrl);
+
+    if (enhancedState) {
+      setIsEnhancing(true);
+      try {
+        const enhancedBlob = await enhanceLighting(baseBlob);
+        setFinalImageUrl(URL.createObjectURL(enhancedBlob));
+      } catch (err) {
+        console.error("Lighting enhancement failed:", err);
+        setDetectionError("Auto Enhance failed. Showing original.");
+        setFinalImageUrl(baseUrl);
+      } finally {
+        setIsEnhancing(false);
+      }
+    } else {
+      setFinalImageUrl(baseUrl);
+    }
+  }, []);
 
   // ─── Background Removal (HF API) ────────────────────────
   const handleRemoveBg = useCallback(async () => {
@@ -265,8 +301,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
         selectedFormat.heightPx,
       );
 
-      if (finalImageUrl) URL.revokeObjectURL(finalImageUrl);
-      setFinalImageUrl(URL.createObjectURL(composited));
+      await updateFinalImage(composited, isEnhanced);
     } catch (err: unknown) {
       console.error("Background removal failed:", err);
       const message =
@@ -280,9 +315,10 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
     croppedImageUrl,
     bgColor,
     selectedFormat,
-    finalImageUrl,
     startLoadingMessages,
     stopLoadingMessages,
+    isEnhanced,
+    updateFinalImage,
   ]);
 
   // ─── Background Color Change ─────────────────────────────
@@ -300,22 +336,54 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
           selectedFormat.heightPx,
         );
 
-        if (finalImageUrl) URL.revokeObjectURL(finalImageUrl);
-        setFinalImageUrl(URL.createObjectURL(composited));
+        await updateFinalImage(composited, isEnhanced);
       } catch (err) {
         console.error("Failed to apply background color:", err);
       }
     },
-    [transparentBlob, selectedFormat, finalImageUrl],
+    [transparentBlob, selectedFormat, isEnhanced, updateFinalImage],
   );
 
   // ─── Restore Original Background ────────────────────────
   const handleRestoreOriginal = useCallback(() => {
     setIsBgRemoved(false);
     setTransparentBlob(null);
-    if (finalImageUrl) URL.revokeObjectURL(finalImageUrl);
+    setUnenhancedImageUrl(null);
     setFinalImageUrl(null);
-  }, [finalImageUrl]);
+  }, []);
+
+  // ─── Toggle Enhance ───────────────────────────────────────
+  const handleToggleEnhance = useCallback(async (state: boolean) => {
+    setIsEnhanced(state);
+    
+    // We need to apply it on the current working blob.
+    // If bg is removed, we re-apply on the transparent blob + bg color.
+    // Wait, the easiest way is to re-run the compositing or just use the unenhanced URL to get the blob.
+    if (!unenhancedImageUrl && !croppedImageUrl) return;
+
+    const sourceUrl = unenhancedImageUrl || croppedImageUrl;
+    if (!sourceUrl) return;
+
+    if (!state) {
+      setFinalImageUrl(sourceUrl);
+      return;
+    }
+
+    setIsEnhancing(true);
+    setDetectionError(null);
+    try {
+      const response = await fetch(sourceUrl);
+      const blob = await response.blob();
+      const enhancedBlob = await enhanceLighting(blob);
+      setFinalImageUrl(URL.createObjectURL(enhancedBlob));
+    } catch (err) {
+      console.error("Enhancement failed:", err);
+      setIsEnhanced(false);
+      setDetectionError("Failed to apply auto-enhancement.");
+    } finally {
+      setIsEnhancing(false);
+    }
+  }, [unenhancedImageUrl, croppedImageUrl]);
 
   // ─── Determine preview image ─────────────────────────────
   const previewSrc = finalImageUrl || croppedImageUrl || uploadedImageUrl;
@@ -395,6 +463,17 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                 </div>
               </section>
             )}
+
+            {/* Enhance Toggle */}
+            {croppedImageUrl && (
+              <section className="animate-in fade-in slide-in-from-left-4 duration-500 delay-300">
+                <EnhanceToggle
+                  isEnhanced={isEnhanced}
+                  onToggle={handleToggleEnhance}
+                  isProcessing={isEnhancing}
+                />
+              </section>
+            )}
           </div>
 
           {/* ─── Editor Main ──────────────────────────────── */}
@@ -419,7 +498,13 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                   <div className="space-y-6">
                     {/* ─── Preview Box ──────────────────── */}
                     <div className="relative aspect-4/3 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner">
-                      {previewSrc && (
+                      {isEnhanced && (unenhancedImageUrl || croppedImageUrl) && finalImageUrl ? (
+                        <CompareSlider
+                          beforeImage={(unenhancedImageUrl || croppedImageUrl) as string}
+                          afterImage={finalImageUrl}
+                          className="w-full h-full"
+                        />
+                      ) : previewSrc ? (
                         <Image
                           src={previewSrc}
                           alt="Preview"
@@ -428,7 +513,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                           unoptimized
                           priority
                         />
-                      )}
+                      ) : null}
 
                       {/* Face Overlay (only on original image) */}
                       {!croppedImageUrl &&
