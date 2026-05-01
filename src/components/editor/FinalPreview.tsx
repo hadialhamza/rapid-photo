@@ -25,9 +25,9 @@ export function FinalPreview({
 }: FinalPreviewProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copies, setCopies] = useState(4);
+  const [copies, setCopies] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  
+
   const addItem = usePrintCartStore((state) => state.addItem);
 
   const handleDownload = async () => {
@@ -41,7 +41,7 @@ export function FinalPreview({
         selectedFormat.id,
         selectedFormat.widthPx,
         selectedFormat.heightPx,
-        100 // High quality JPEG
+        100, // High quality JPEG
       );
     } catch (err) {
       console.error("Export failed:", err);
@@ -61,10 +61,18 @@ export function FinalPreview({
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" onClick={onBack} className="text-muted-foreground gap-2">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="text-muted-foreground gap-2"
+          >
             <ArrowLeft className="w-4 h-4" /> Back to Editor
           </Button>
-          <Button variant="ghost" onClick={onStartOver} className="text-muted-foreground gap-2">
+          <Button
+            variant="ghost"
+            onClick={onStartOver}
+            className="text-muted-foreground gap-2"
+          >
             <RotateCcw className="w-4 h-4" /> Start Over
           </Button>
         </div>
@@ -75,7 +83,7 @@ export function FinalPreview({
         {/* Left: Preview */}
         <div className="space-y-4">
           <div className="relative aspect-4/3 w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-inner flex items-center justify-center">
-             {/* Note: CompareSlider handles the object-cover stretching, we wrap it to maintain aspect ratio and containment */}
+            {/* Note: CompareSlider handles the object-cover stretching, we wrap it to maintain aspect ratio and containment */}
             <CompareSlider
               beforeImage={originalImageUrl}
               afterImage={finalImageUrl}
@@ -94,23 +102,33 @@ export function FinalPreview({
             <ul className="space-y-3 text-sm">
               <li className="flex justify-between border-b border-border/50 pb-2">
                 <span className="text-muted-foreground">Format</span>
-                <span className="font-medium text-foreground">{selectedFormat.type} ({selectedFormat.country})</span>
+                <span className="font-medium text-foreground">
+                  {selectedFormat.type} ({selectedFormat.country})
+                </span>
               </li>
               <li className="flex justify-between border-b border-border/50 pb-2">
                 <span className="text-muted-foreground">Print Size</span>
-                <span className="font-medium text-foreground">{selectedFormat.dimensionsMm}</span>
+                <span className="font-medium text-foreground">
+                  {selectedFormat.dimensionsMm}
+                </span>
               </li>
               <li className="flex justify-between border-b border-border/50 pb-2">
                 <span className="text-muted-foreground">Digital Size</span>
-                <span className="font-medium text-foreground">{selectedFormat.widthPx} × {selectedFormat.heightPx} px</span>
+                <span className="font-medium text-foreground">
+                  {selectedFormat.widthPx} × {selectedFormat.heightPx} px
+                </span>
               </li>
               <li className="flex justify-between border-b border-border/50 pb-2">
                 <span className="text-muted-foreground">Resolution</span>
-                <span className="font-medium text-foreground">300 DPI (High Quality)</span>
+                <span className="font-medium text-foreground">
+                  300 DPI (High Quality)
+                </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-muted-foreground">Format Type</span>
-                <span className="font-medium text-foreground">JPEG (100% Quality)</span>
+                <span className="font-medium text-foreground">
+                  JPEG (100% Quality)
+                </span>
               </li>
             </ul>
           </div>
@@ -124,9 +142,9 @@ export function FinalPreview({
 
           <Button
             size="lg"
-            className="w-full h-14 text-lg font-medium shadow-lg hover:shadow-xl transition-all"
             onClick={handleDownload}
             disabled={isExporting}
+            icon={<Download className="w-5 h-5" />}
           >
             {isExporting ? (
               <div className="flex items-center gap-2">
@@ -134,10 +152,7 @@ export function FinalPreview({
                 Processing Export...
               </div>
             ) : (
-              <>
-                <Download className="w-5 h-5 mr-2" />
-                Download High Quality Photo
-              </>
+              <>Download High Quality Photo</>
             )}
           </Button>
 
@@ -148,7 +163,7 @@ export function FinalPreview({
               Add multiple photos to create a print-ready A4 PDF.
             </p>
             <div className="flex items-center gap-4">
-              <div className="flex items-center border border-border rounded-lg bg-surface h-12">
+              <div className="flex items-center border border-border rounded-full bg-surface h-12">
                 <button
                   type="button"
                   onClick={() => setCopies(Math.max(1, copies - 1))}
@@ -166,8 +181,8 @@ export function FinalPreview({
                 </button>
               </div>
               <Button
-                variant={addedToCart ? "secondary" : "outline"}
-                className="flex-1 h-12"
+                variant="secondary"
+                className="flex-1 "
                 onClick={handleAddToCart}
                 disabled={addedToCart}
               >

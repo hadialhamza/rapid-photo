@@ -55,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const sizes = {
       default: "h-12 px-6 py-3",
-      sm: "h-9 rounded-md px-3",
+      sm: "h-9 rounded-full px-3",
       lg: "h-14 rounded-full px-8",
       icon: "h-10 w-10",
     };
@@ -111,8 +111,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {/* Expanding Background Circle */}
           <span
             className={cn(
-              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full opacity-0 transition-all duration-500 ease-out",
-              "group-hover:w-75 group-hover:h-75 group-hover:opacity-100",
+              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full opacity-0 transition-all duration-300 ease-out",
+              "group-hover:w-full group-hover:h-75 group-hover:opacity-100",
               circleColor,
             )}
           />
@@ -135,7 +135,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={cn(
           baseStyles,
-          "rounded-md border-transparent hover:shadow-md",
+          "rounded-full border-transparent hover:shadow-md",
           variants[variant],
           sizes[size],
           className,
