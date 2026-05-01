@@ -1,220 +1,131 @@
 🧭 PROJECT OVERVIEW
 🎯 Goal
-Build a browser-first passport & visa photo generator that:
-Crops face correctly (rule-based)
-Removes background locally (no paid API dependency)
-Applies controlled lighting correction (no face alteration)
-Generates print-ready photos (future phase)
-Runs on Next.js + Vercel free tier
+Build a premium, browser-first passport & visa photo generator that provides official passport and visa photos with absolute privacy and professional quality.
+
+Key Objectives:
+
+- Precision Face Alignment: Rule-based auto-cropping using MediaPipe.
+- Professional Background Removal: High-quality subject separation using remove.bg API with a multi-key rotation system.
+- Quality Enhancement: Non-destructive lighting correction and optional skin smoothing.
+- Global Standards: Support for 150+ countries and various official formats.
+- Print-Ready Layouts: Create A4 PDF sheets with multiple photos for physical printing.
+- Privacy First: Processing happens on-the-fly; no user images are stored permanently.
 
 🧱 SYSTEM ARCHITECTURE
-🟦 Frontend (Primary Processing Layer)
-Image upload
-Face detection
-Crop UI + adjustments
-Background removal
-Lighting correction
-Background selection
-Preview rendering
-🟩 Backend (Minimal, Vercel API routes)
-Final image export (resize + format)
-Optional validation checks
-Print-sheet generation (later phase)
+🟦 Frontend (Primary Interaction Layer)
+
+- Next.js (App Router) + Tailwind CSS
+- State Management: Zustand (Editor state, Print Cart)
+- Client-side Processing:
+  - Face Detection (MediaPipe)
+  - Interactive Cropping (react-easy-crop)
+  - Image Filtering (Canvas API)
+  - Auto-Lighting & Noiseware
+- UI Components: Framer Motion for premium animations, Lucide React icons.
+
+🟩 Backend (Processing & API Layer)
+
+- Vercel API Routes (Next.js)
+- Background Removal: Proxy to remove.bg API with automatic rotation across multiple API keys to handle rate limits and credits.
+- Final Export Engine: Sharp (High-quality resizing, JPEG compression, DPI metadata).
+- PDF Generation: Client-side layout for A4 print sheets.
 
 ⚙️ CORE TECHNOLOGY STACK
 🧠 Frontend Libraries
 
-1. Face detection
-   MediaPipe
-   Used for:
-   face bounding box
-   eye position estimation
-   auto crop initialization
+1. Face Detection: MediaPipe Tasks Vision
+   - Used for: Face bounding box, eye position, and auto-crop initialization.
+2. Crop UI: react-easy-crop
+   - Used for: Aspect-ratio locked cropping, manual adjustments.
+3. State Management: Zustand
+   - Used for: Global editor state, print layout cart, and format selections.
+4. Animations: Framer Motion
+   - Used for: Smooth page transitions and micro-interactions.
 
-2. Crop UI
-   react-easy-crop
-   Used for:
-   aspect ratio locked cropping
-   drag/zoom adjustment
-   preview-based editing
+🧾 Backend & Engine 5. Background Removal: remove.bg API
 
-3. Background removal
-   @imgly/background-removal
-   Used for:
-   client-side segmentation
-   human subject extraction
+- Used for: Professional-grade subject extraction with fine edge detail.
 
-4. Edge + image processing
-   Canvas API (native browser)
-   OpenCV.js (optional advanced layer)
-   Used for:
-   feathering edges
-   mask smoothing
-   brightness/contrast adjustments
-   histogram-based correction
-
-🧾 Backend Libraries (Vercel API routes) 5. Final processing
-Sharp
-Used for:
-final resize (passport standards)
-format conversion (JPEG)
-compression optimization
+6. Final Image Processing: Sharp
+   - Used for: 300 DPI metadata injection, JPEG optimization, exact pixel resizing.
+7. Processing Utilities: Canvas API
+   - Used for: Real-time filters (brightness, contrast, smoothing) and preview compositing.
 
 📐 SUPPORTED PHOTO FORMATS
-🇮🇳 Indian Visa Photo
-Size: 2 × 2 inch
-Resolution: 300 DPI
-Pixels: 600 × 600
-Background: fixed white (#FFFFFF)
 
-🇧🇩 Bangladesh Passport Photo
-Size: 1.5 × 1.9 inch
-Resolution: 300 DPI
-Pixels: 450 × 570
-Background: selectable (default blue)
+- 150+ Countries: Including USA, UK, India, Bangladesh, Schengen, Canada, etc.
+- Standard Formats: Passport, Visa, Stamp, ID Card, etc.
+- Resolution: 300 DPI (Standard for official documents).
 
 🧠 CORE PROCESSING PIPELINE
-STEP 1 — Upload
-User uploads 6–8MB image
-Immediate compression (client-side)
+STEP 1 — Upload & Detect
+User uploads an image. MediaPipe immediately scans for faces and eye positions.
 
-STEP 2 — Face Detection (MediaPipe)
-Detect:
-face bounding box
-eye position
+STEP 2 — Smart Auto-Crop
+Rule-based engine calculates the perfect crop:
 
-STEP 3 — Smart Crop Engine
-Rules:
-Lock aspect ratio (based on target format)
-Head occupies ~60–70% height
-Eyes aligned ~55–60% vertical position
-Center horizontally
+- Head occupies ~60–70% of height.
+- Eyes aligned at ~55–60% vertical line.
+- Centered horizontally based on face midpoint.
 
-STEP 4 — Manual Adjustment UI
-Using react-easy-crop:
-drag image
-zoom in/out
-fine-tune alignment
+STEP 3 — Manual Adjustment
+User fine-tunes the crop using the interactive editor (Zoom/Rotate/Drag).
 
-STEP 5 — Background Removal
-Using IMG.LY:
-run on cropped image only
-output transparent PNG
+STEP 4 — Background Removal
+Server-side processing using remove.bg API. The system automatically rotates through multiple API keys to ensure service availability.
 
-STEP 6 — Edge Refinement Layer
-Apply:
-feather mask edges
-color decontamination
-optional OpenCV.js smoothing
+STEP 5 — Quality Enhancement
 
-STEP 7 — Background Replacement
-India Visa:
-fixed white background
-Bangladesh Passport:
-selectable palette:
-blue (default)
-light blue
-white
-off-white
+- Auto-Lighting: Non-destructive brightness and contrast normalization.
+- Noiseware: Optional skin smoothing for a professional studio look.
 
-STEP 8 — Auto Retouch (Lighting Correction)
-Rules:
-brightness normalization
-gamma correction
-contrast adjustment
-white balance correction
-face-aware enhancement (MediaPipe region)
-NO:
-skin smoothing
-face reshaping
+STEP 6 — Background Replacement
+User selects from official colors (White, Off-white, Blue, Light Blue, etc.).
 
-STEP 9 — Quality Validation Engine
-Checks:
-face size too small
-face off-center
-image too dark/bright
-blur detection
-Output:
-warnings or auto-fix suggestions
+STEP 7 — Review & Compare
+Compare original vs. processed image using the interactive slider.
 
-STEP 10 — Final Export (Server-side)
-Using Sharp:
-resize to exact pixel dimensions
-compress JPEG
-return downloadable image
+STEP 8 — Print Layout (Optional)
+Add processed photos to the "Print Cart" to generate an A4 PDF with multiple copies.
 
-🎨 UX FLOW DESIGN
-Screen 1: Upload
-drag & drop / file select
-Screen 2: Auto Crop Preview
-face detected overlay
-suggestion shown
-Screen 3: Manual Adjust
-crop box (react-easy-crop)
-zoom slider
-Screen 4: Background Selection
-color swatches (Bangladesh only)
-Screen 5: Enhancement Toggle
-“Auto Enhance” ON/OFF
-Screen 6: Final Preview
-before/after slider
-download button
+STEP 9 — Final Export
+Server-side export using Sharp to ensure exact pixel dimensions and 300 DPI metadata.
 
-🔥 KEY FEATURES (FINAL PRODUCT SCOPE)
-✔ Core MVP
-Face detection
-Smart crop
-Background removal
-White/blue background
-Auto resize
+🎨 UI/UX DESIGN
+The application follows a modular multi-page structure:
 
-✔ V1 Upgrade
-Manual crop adjustment
-Lighting correction
-Edge refinement
+- Home: High-converting landing page with features and how-it-works.
+- Editor: The core workspace (Upload → Edit → Export).
+- Supported Formats: Searchable directory of all global photo standards.
+- Information Pages: Dedicated Features, How It Works, and Contact pages.
+- Professional Policies: Privacy Policy and Terms of Service.
 
-✔ V2 Premium
-Quality validation system
-Multi-background presets
-Before/after comparison UI
+🔥 KEY FEATURES (STATUS)
+✅ Completed
 
-✔ V3 (future)
-Print-ready sheet generator
-Multi-photo layout (A4)
-Batch processing
+- [x] AI Face Detection & Smart Crop
+- [x] High-Quality Background Removal (remove.bg API with Multi-Key Rotation)
+- [x] 150+ Country Formats Support
+- [x] Auto-Lighting & Noiseware Filters
+- [x] Before/After Comparison UI
+- [x] Print-Ready A4 PDF Generator
+- [x] Responsive Premium Design
+- [x] Privacy-First Workflow
 
 ⚠️ DESIGN CONSTRAINTS (IMPORTANT)
 ❌ Do NOT:
-beautify face
-reshape identity
-use heavy AI filters
-rely on external APIs for core pipeline
-✅ DO:
-preserve identity
-correct lighting only
-keep processing deterministic
-prioritize speed + trust
+
+- Reshape facial features or alter identity.
+- Use heavy stylistic AI filters.
+- Store user images permanently on servers.
+  ✅ DO:
+- Preserve official identity standards.
+- Maintain 300 DPI print quality.
+- Ensure deterministic and predictable results.
+- Prioritize trust and data privacy.
 
 🚀 ARCHITECTURE SUMMARY
-UPLOAD
-↓
-MediaPipe (face detection)
-↓
-react-easy-crop (manual adjustment)
-↓
-IMG.LY (background removal)
-↓
-Edge refinement (Canvas/OpenCV.js)
-↓
-Background selection
-↓
-Auto lighting correction
-↓
-Sharp (final export on server)
+UPLOAD → MediaPipe (Face) → react-easy-crop → remove.bg API → Sharp (Export) → Print PDF (A4)
 
-🧠 PRODUCT POSITIONING (IMPORTANT)
-Your app is NOT:
-❌ photo editor
-It IS:
-✅ “passport-grade photo generator system”
-That positioning is what makes it trustworthy and useful.
+🧠 PRODUCT POSITIONING
+Rapid Photo is an "Official Passport and Visa Photos Generator" designed for reliability, speed, and privacy.

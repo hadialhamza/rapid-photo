@@ -1,6 +1,7 @@
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
 import { Button } from "@/components/ui/Button";
-import { UploadCloud, Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function CTASection() {
   return (
@@ -23,14 +24,16 @@ export function CTASection() {
           delay={0.2}
           className="mt-10 flex flex-col items-center justify-center gap-6"
         >
-          <Button
-            size="lg"
-            variant="default"
-            className="text-lg px-8 py-6 w-full sm:w-auto"
-            icon={<UploadCloud />}
-          >
-            Upload Photo Now
-          </Button>
+          <Link href="/editor">
+            <Button
+              size="lg"
+              variant="default"
+              className="text-lg px-8 py-6 w-full sm:w-auto"
+              icon={<ArrowRight />}
+            >
+              Get Started Now
+            </Button>
+          </Link>
 
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mt-8 text-sm font-medium text-subtle">
             <div className="flex items-center gap-2">

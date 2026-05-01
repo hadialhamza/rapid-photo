@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
-import { ScanFace, ImageMinus, SunMedium, ShieldCheck } from "lucide-react";
+import { ScanFace, ImageMinus, Sparkles, Printer } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
 
@@ -27,18 +27,18 @@ const features = [
     bgColor: "bg-secondary/15",
   },
   {
-    title: "Perfect Lighting Correction",
+    title: "Premium Skin & Lighting",
     description:
-      "Automatically adjusts brightness and contrast without altering your actual identity or skin.",
-    icon: SunMedium,
+      "Advanced Noiseware-style smoothing and auto-lighting for a professional studio look.",
+    icon: Sparkles,
     color: "text-warning",
     bgColor: "bg-warning/15",
   },
   {
-    title: "100% Private & Local",
+    title: "Print-Ready A4 Layout",
     description:
-      "Your photos never leave your device during processing. Fast, deterministic, and secure.",
-    icon: ShieldCheck,
+      "Arrange multiple photos in a single A4 PDF with automatic cutting marks and 300 DPI.",
+    icon: Printer,
     color: "text-success",
     bgColor: "bg-success/15",
   },

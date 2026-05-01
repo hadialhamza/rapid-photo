@@ -1,5 +1,6 @@
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { SUPPORTED_FORMATS } from "@/lib/constants/photo-formats";
 import { Ruler, Maximize, PaintBucket, ArrowRight } from "lucide-react";
@@ -7,7 +8,7 @@ import Link from "next/link";
 
 export function SupportedFormatsSection() {
   return (
-    <section className="bg-surface/50 py-24 sm:py-32">
+    <section id="formats" className="bg-surface/50 py-24 sm:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
           <SectionHeader
@@ -25,15 +26,21 @@ export function SupportedFormatsSection() {
               >
                 <Card className="h-full transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(255,49,49,0.1)] group-hover:-translate-y-1">
                   <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                    <span className="text-4xl" aria-hidden="true">
-                      {format.flag}
-                    </span>
+                    <div className="relative h-10 w-14 overflow-hidden rounded-md border border-border/50 shadow-sm">
+                      <Image
+                        src={`https://flagcdn.com/w80/${format.isoCode.toLowerCase()}.png`}
+                        alt={`${format.country} flag`}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
                     <div className="flex-1">
                       <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">
                         {format.country}
                       </CardTitle>
                       <p className="text-sm font-medium text-muted mt-1">
-                        {format.type}
+                        {format.type} Size
                       </p>
                     </div>
                   </CardHeader>

@@ -9,24 +9,24 @@ import { PhotoFormat } from "@/lib/constants/photo-formats";
 interface EditorSidebarProps {
   selectedFormat: PhotoFormat;
   onFormatSelect: (format: PhotoFormat) => void;
-  
+
   croppedImageUrl: string | null;
-  
+
   isBgRemoved: boolean;
   bgProcessing: boolean;
   bgColor: string;
   onRemoveBg: () => void;
   onBgColorChange: (color: string) => void;
   onRestoreOriginal: () => void;
-  
+
   isEnhanced: boolean;
   isEnhancing: boolean;
   onToggleEnhance: (state: boolean) => void;
-  
+
   isSmoothed: boolean;
   isSmoothing: boolean;
   onToggleSmooth: (state: boolean) => void;
-  
+
   onContinueToExport: () => void;
 }
 
@@ -78,7 +78,6 @@ export function EditorSidebar({
             {!isBgRemoved ? (
               <Button
                 variant="default"
-                size="sm"
                 className="w-full"
                 onClick={onRemoveBg}
                 disabled={bgProcessing}
@@ -117,11 +116,7 @@ export function EditorSidebar({
       {/* Export Action */}
       {croppedImageUrl && (
         <section className="pt-4 border-t border-border/50 animate-in fade-in slide-in-from-left-4 duration-500 delay-500">
-          <Button 
-            className="w-full shadow-md" 
-            size="lg" 
-            onClick={onContinueToExport}
-          >
+          <Button className="w-full" onClick={onContinueToExport}>
             Continue to Export
           </Button>
         </section>
