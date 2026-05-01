@@ -3,6 +3,7 @@ export interface PhotoFormat {
   id: string;
   country: string;
   flag: string;
+  isoCode: string;
   type: string;
   dimensionsMm: string;
   dimensionsInches: string;
@@ -24,6 +25,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "bd-passport",
     country: "Bangladesh",
     flag: "🇧🇩",
+    isoCode: "bd",
     type: "Passport",
     dimensionsMm: "40 × 50 mm",
     dimensionsInches: "1.5 × 1.9 in",
@@ -41,6 +43,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "in-visa",
     country: "India",
     flag: "🇮🇳",
+    isoCode: "in",
     type: "Visa",
     dimensionsMm: "51 × 51 mm",
     dimensionsInches: "2.0 × 2.0 in",
@@ -58,6 +61,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "us-passport",
     country: "United States",
     flag: "🇺🇸",
+    isoCode: "us",
     type: "Passport & Visa",
     dimensionsMm: "51 × 51 mm",
     dimensionsInches: "2.0 × 2.0 in",
@@ -75,6 +79,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "uk-passport",
     country: "United Kingdom",
     flag: "🇬🇧",
+    isoCode: "gb",
     type: "Passport",
     dimensionsMm: "35 × 45 mm",
     dimensionsInches: "1.38 × 1.77 in",
@@ -92,6 +97,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "schengen-visa",
     country: "Schengen Area",
     flag: "🇪🇺",
+    isoCode: "eu",
     type: "Visa",
     dimensionsMm: "35 × 45 mm",
     dimensionsInches: "1.38 × 1.77 in",
@@ -109,6 +115,7 @@ export const SUPPORTED_FORMATS: PhotoFormat[] = [
     id: "ca-passport",
     country: "Canada",
     flag: "🇨🇦",
+    isoCode: "ca",
     type: "Passport",
     dimensionsMm: "50 × 70 mm",
     dimensionsInches: "2.0 × 2.75 in",
