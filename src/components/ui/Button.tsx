@@ -104,7 +104,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           )}
 
           {/* Text Content */}
-          <span className="relative z-10 -translate-x-3 transition-transform duration-500 ease-out group-hover:translate-x-3 group-hover:text-primary-foreground font-semibold flex items-center gap-2">
+          <span className="relative z-10 -translate-x-3 transition-transform duration-500 ease-out group-hover:translate-x-3 group-hover:text-primary-foreground font-semibold flex items-center gap-2 px-2">
             {children as React.ReactNode}
           </span>
 
