@@ -1,9 +1,21 @@
 # 📸 Rapid Photo — Official Passport and Visa Photos Generator
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
-[![Zustand](https://img.shields.io/badge/Zustand-State-orange?style=flat-square)](https://zustand-demo.pmnd.rs/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+<p align="center">
+  <img src="public/logo/rp-logo2.png" alt="Rapid Photo Logo" width="250">
+</p>
+
+![Rapid Photo Screenshot](https://res.cloudinary.com/djmfhatti/image/upload/v1777665354/rapid-photo-home_y56mrh.png)
+
+<div align="center">
+
+### [🚀 Live Demo](https://rapid-photo.vercel.app/) | [💻 GitHub Repo](https://github.com/hadialhamza/rapid-photo)
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-State-orange?style=for-the-badge)](https://zustand-demo.pmnd.rs/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+</div>
 
 **Rapid Photo** is a premium, privacy-first web application designed to generate official passport and visa photos instantly. By combining browser-based AI with robust server-side processing, it automates the tedious task of aligning, cropping, and background-removal according to official global standards.
 
@@ -24,6 +36,7 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS + Framer Motion (for premium animations)
 - **State Management**: Zustand (Global Store for Editor & Print Cart)
@@ -31,6 +44,7 @@
 - **Image Editing**: react-easy-crop + Canvas API
 
 ### Backend & Processing
+
 - **Serverless**: Vercel API Routes
 - **Image Engine**: **Sharp** (High-performance resizing, JPEG optimization, 300 DPI metadata injection)
 - **External AI**: remove.bg API (Subject extraction)
@@ -51,23 +65,27 @@
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18.x or later
 - remove.bg API Key(s)
 
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/hadialhamza/rapid-photo.git
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Configure Environment Variables:
    Create a `.env.local` file and add your remove.bg API keys:
+
    ```env
    REMOVE_BG_API_KEY_1=your_key_here
    REMOVE_BG_API_KEY_2=your_other_key_here

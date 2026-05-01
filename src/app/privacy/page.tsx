@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Read how Rapid Photo handles your data with absolute privacy and secure processing.",
+};
 
 export default function PrivacyPage() {
   const sections = [

@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/ui/animated/AnimatedSection";
+
+export const metadata: Metadata = {
+  title: "Supported Formats",
+  description: "Browse official photo requirements for 150+ countries including USA, UK, India, Bangladesh, and Schengen Area.",
+};
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { SUPPORTED_FORMATS } from "@/lib/constants/photo-formats";
 import { Ruler, Maximize, PaintBucket, ArrowRight, Globe } from "lucide-react";
