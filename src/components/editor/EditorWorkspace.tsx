@@ -22,6 +22,7 @@ import { FaceOverlay } from "@/components/editor/FaceOverlay";
 import { CropEditor } from "@/components/editor/CropEditor";
 import { BackgroundPicker } from "@/components/editor/BackgroundPicker";
 import { EnhanceToggle } from "@/components/editor/EnhanceToggle";
+import { FinalPreview } from "@/components/editor/FinalPreview";
 import { CompareSlider } from "@/components/ui/CompareSlider";
 import { enhanceLighting } from "@/lib/engine/lighting-corrector";
 import {
@@ -413,8 +414,16 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* ─── Sidebar ──────────────────────────────────── */}
+        {step === "export" && previewSrc && uploadedImageUrl ? (
+          <FinalPreview
+            originalImageUrl={uploadedImageUrl}
+            finalImageUrl={previewSrc}
+            selectedFormat={selectedFormat}
+            onBack={() => setStep("upload")}
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* ─── Sidebar ──────────────────────────────────── */}
           <div className="space-y-6">
             <section>
               <h3 className="text-xs font-semibold uppercase text-muted mb-3">
@@ -472,6 +481,19 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
                   onToggle={handleToggleEnhance}
                   isProcessing={isEnhancing}
                 />
+              </section>
+            )}
+
+            {/* Export Action */}
+            {croppedImageUrl && (
+              <section className="pt-4 border-t border-border/50 animate-in fade-in slide-in-from-left-4 duration-500 delay-500">
+                <Button 
+                  className="w-full shadow-md" 
+                  size="lg" 
+                  onClick={() => setStep("export")}
+                >
+                  Continue to Export
+                </Button>
               </section>
             )}
           </div>
@@ -631,7 +653,8 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
               </div>
             )}
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
