@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📸 Rapid Photo — Official Passport and Visa Photos Generator
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-State-orange?style=flat-square)](https://zustand-demo.pmnd.rs/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-First, run the development server:
+**Rapid Photo** is a premium, privacy-first web application designed to generate official passport and visa photos instantly. By combining browser-based AI with robust server-side processing, it automates the tedious task of aligning, cropping, and background-removal according to official global standards.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌟 Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **🤖 AI-Powered Face Alignment**: Uses Google's **MediaPipe** to detect facial landmarks and automatically calculate the perfect crop (head size, eye-line) for 150+ country standards.
+- **🖼️ Intelligent Background Removal**: Seamlessly separates subjects from backgrounds using the **remove.bg API** with high-fidelity edge refinement.
+- **⚡ Multi-Key Rotation System**: A custom engineering solution that automatically rotates through multiple API keys to handle rate limits and credit quotas, ensuring 100% uptime.
+- **✨ Studio-Quality Filters**: Optional non-destructive lighting correction and **Noiseware** skin smoothing for a professional studio look.
+- **🌍 Global Standards**: Pre-configured presets for over 150 countries (USA, UK, India, Bangladesh, Schengen Area, and more).
+- **🖨️ Print-Ready Layouts**: Add multiple photos to a "Print Cart" and generate a standard A4 PDF sheet ready for physical printing.
+- **🔒 Privacy-First**: Heavy client-side processing ensuring images are handled on-the-fly without permanent server storage.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+### Frontend
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS + Framer Motion (for premium animations)
+- **State Management**: Zustand (Global Store for Editor & Print Cart)
+- **Face Detection**: MediaPipe Tasks Vision
+- **Image Editing**: react-easy-crop + Canvas API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Backend & Processing
+- **Serverless**: Vercel API Routes
+- **Image Engine**: **Sharp** (High-performance resizing, JPEG optimization, 300 DPI metadata injection)
+- **External AI**: remove.bg API (Subject extraction)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ How It Works (The Pipeline)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Upload**: User selects a high-res photo.
+2.  **Detect**: MediaPipe scans for face bounding boxes and eye coordinates in the browser.
+3.  **Smart Crop**: The engine automatically calculates the crop area based on official rules (e.g., head height ~70% of frame).
+4.  **Process**: The subject is extracted via AI, background is replaced with official colors, and lighting is normalized.
+5.  **Export**: The final image is sent to a Sharp-powered server to inject 300 DPI metadata and exact pixel dimensions.
+6.  **Print**: User can generate a layout of 4, 8, or 12 photos on a single A4 sheet.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18.x or later
+- remove.bg API Key(s)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/hadialhamza/rapid-photo.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure Environment Variables:
+   Create a `.env.local` file and add your remove.bg API keys:
+   ```env
+   REMOVE_BG_API_KEY_1=your_key_here
+   REMOVE_BG_API_KEY_2=your_other_key_here
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 🧠 Engineering Highlights
+
+- **Optimized Performance**: Leveraged the **Leaf Pattern** in Next.js to minimize client-side bundle size, keeping interactivity restricted to specific sub-components while maintaining Server Components for layouts.
+- **Resilient API Handling**: Implemented a failover strategy for background removal that detects rate limits and dynamically switches between multiple API credentials.
+- **Deterministic Processing**: Engineered a math-based "Smart Crop" utility that translates normalized facial landmarks into absolute pixel coordinates for consistent results regardless of image resolution.
+
+---
+
+## 👨‍💻 Author
+
+**MD HADI AL HAMZA**  
+Full Stack Developer | Rangpur, Bangladesh  
+[Portfolio](https://hadialhamza.vercel.app) | [LinkedIn](https://www.linkedin.com/in/hadihamza) | [GitHub](https://github.com/hadialhamza)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
