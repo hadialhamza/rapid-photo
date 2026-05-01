@@ -449,7 +449,7 @@ export function EditorWorkspace({ initialPresetId }: EditorWorkspaceProps) {
 
         {step === "export" && previewSrc && uploadedImageUrl ? (
           <FinalPreview
-            originalImageUrl={uploadedImageUrl}
+            originalImageUrl={croppedImageUrl || uploadedImageUrl}
             finalImageUrl={previewSrc}
             selectedFormat={selectedFormat}
             onBack={() => setStep("upload")}

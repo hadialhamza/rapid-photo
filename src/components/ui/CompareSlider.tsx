@@ -61,7 +61,7 @@ export function CompareSlider({ beforeImage, afterImage, className }: CompareSli
         src={afterImage}
         alt="After processing"
         fill
-        className="object-cover pointer-events-none"
+        className="object-contain pointer-events-none"
         draggable={false}
         sizes="(max-width: 768px) 100vw, 800px"
       />
@@ -75,7 +75,7 @@ export function CompareSlider({ beforeImage, afterImage, className }: CompareSli
           src={beforeImage}
           alt="Before processing"
           fill
-          className="object-cover pointer-events-none"
+          className="object-contain pointer-events-none"
           draggable={false}
           sizes="(max-width: 768px) 100vw, 800px"
         />
