@@ -19,7 +19,7 @@ export function Footer() {
             </Link>
             <p className="text-muted max-w-sm">
               Create official passport and visa photos in seconds. 100% free,
-              secure, and processed entirely on your device.
+              secure, and high-quality print-ready layouts.
             </p>
             <div className="flex items-center gap-4 text-muted">
               <Link
@@ -51,7 +51,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
-                  href="#features"
+                  href="/features"
                   className="text-muted hover:text-primary transition-colors"
                 >
                   Features
@@ -75,10 +75,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#faq"
+                  href="/editor"
                   className="text-muted hover:text-primary transition-colors"
                 >
-                  FAQ
+                  Start Editing
                 </Link>
               </li>
             </ul>

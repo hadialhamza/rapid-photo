@@ -19,7 +19,7 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">
             <Link
-              href="#features"
+              href="/features"
               className="hover:text-foreground transition-colors"
             >
               Features
