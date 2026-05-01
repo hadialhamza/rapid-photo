@@ -67,7 +67,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#formats"
+                  href="/formats"
                   className="text-muted hover:text-primary transition-colors"
                 >
                   Supported Formats

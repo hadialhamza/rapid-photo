@@ -30,6 +30,12 @@ export function Navbar() {
             >
               How it Works
             </Link>
+            <Link
+              href="/formats"
+              className="hover:text-foreground transition-colors"
+            >
+              Formats
+            </Link>
           </nav>
           <Link href="/editor">
             <Button className="font-semibold">
