@@ -55,7 +55,7 @@ export function HeroSection() {
                 Upload Photo
               </Button>
             </Link>
-            <Link href="#formats">
+            <Link href="/formats">
               <Button
                 size="lg"
                 variant="secondary"
