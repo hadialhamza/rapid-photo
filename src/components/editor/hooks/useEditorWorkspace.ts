@@ -13,6 +13,7 @@ import { useEditorStore, LOADING_MESSAGES } from "@/store/editor-store";
 
 export function useEditorWorkspace(initialPresetId?: string) {
   const store = useEditorStore();
+  const { setSelectedFormat } = store;
   const isMounted = useRef(false);
   const loadingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -20,9 +21,9 @@ export function useEditorWorkspace(initialPresetId?: string) {
   useEffect(() => {
     if (initialPresetId) {
       const format = getFormatById(initialPresetId);
-      if (format) store.setSelectedFormat(format);
+      if (format) setSelectedFormat(format);
     }
-  }, [initialPresetId, store]); // Only on mount/id change
+  }, [initialPresetId, setSelectedFormat]); // Only on mount/id change
 
   useEffect(() => {
     isMounted.current = true;
