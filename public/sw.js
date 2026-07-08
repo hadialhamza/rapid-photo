@@ -62,6 +62,27 @@ self.addEventListener("fetch", function (event) {
     return;
   }
 
+  // Cache-First strategy for local MediaPipe binaries and models
+  if (url.pathname.startsWith("/mediapipe/")) {
+    event.respondWith(
+      caches.match(request).then(function (cachedResponse) {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then(function (networkResponse) {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then(function (cache) {
+              cache.put(request, responseToCache);
+            });
+          }
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
   event.respondWith(
     fetch(request)
       .then(function (networkResponse) {

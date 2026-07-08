@@ -33,14 +33,14 @@ async function getDetector(): Promise<FaceDetector> {
   if (detectorInstance) return detectorInstance;
 
   try {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
     const vision = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+      `${origin}/mediapipe`
     );
 
     detectorInstance = await FaceDetector.createFromOptions(vision, {
       baseOptions: {
-        modelAssetPath:
-          "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+        modelAssetPath: `${origin}/mediapipe/blaze_face_short_range.tflite`,
         delegate: "GPU",
       },
       runningMode: "IMAGE",

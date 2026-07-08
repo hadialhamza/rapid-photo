@@ -40,7 +40,6 @@ export function calculateSmartCrop(
   const { aspectRatio, headRatio, eyeLineRatio } = format;
 
   // ── Step 1: Calculate eye center ──────────────────────────
-  const eyeCenterX = (leftEye.x + rightEye.x) / 2;
   const eyeCenterY = (leftEye.y + rightEye.y) / 2;
 
   // ── Step 2: Estimate full head height ─────────────────────

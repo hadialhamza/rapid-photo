@@ -112,6 +112,12 @@ The application follows a modular multi-page structure:
 - [x] Responsive Premium Design
 - [x] Privacy-First Workflow
 
+🚀 PERFORMANCE & OFFLINE RESILIENCE OPTIMIZATION
+- **Local MediaPipe Hosting**: WebAssembly files and the BlazeFace model are hosted locally in `public/mediapipe/` to eliminate external Google CDN network requests and prevent potential CORS or version mismatch issues.
+- **Background Prefetching**: A client-side Prefetcher (`PrefetchMediaPipe.tsx`) downloads these assets in the background with low priority after the home page is fully loaded and the browser thread is idle.
+- **Cache-First Service Worker Strategy**: The Service Worker (`sw.js`) intercepts all local `/mediapipe/*` asset requests and serves them with a Cache-First strategy to ensure instant load times and fully offline execution capability.
+
+
 ⚠️ DESIGN CONSTRAINTS (IMPORTANT)
 ❌ Do NOT:
 
