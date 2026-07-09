@@ -4,7 +4,7 @@ export async function downloadFinalPhoto(
   widthPx: number,
   heightPx: number,
   quality: number = 100
-): Promise<void> {
+): Promise<Blob> {
   const formData = new FormData();
   formData.append("image", blob, "photo.png");
   formData.append("formatId", formatId);
@@ -31,4 +31,6 @@ export async function downloadFinalPhoto(
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(downloadUrl);
+
+  return finalBlob;
 }

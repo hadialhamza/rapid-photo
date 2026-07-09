@@ -7,6 +7,7 @@ import { CompareSlider } from "@/components/ui/CompareSlider";
 import { PhotoFormat } from "@/lib/constants/photo-formats";
 import { downloadFinalPhoto } from "@/lib/engine/export-client";
 import { usePrintCartStore } from "@/store/print-cart-store";
+import { useAuthStore } from "@/store/auth-store";
 
 interface FinalPreviewProps {
   originalImageUrl: string;
@@ -27,22 +28,54 @@ export function FinalPreview({
   const [error, setError] = useState<string | null>(null);
   const [copies, setCopies] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  
+  const user = useAuthStore((state) => state.user);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const addItem = usePrintCartStore((state) => state.addItem);
 
   const handleDownload = async () => {
     setIsExporting(true);
     setError(null);
+    setSaveSuccess(false);
     try {
       const response = await fetch(finalImageUrl);
       const blob = await response.blob();
-      await downloadFinalPhoto(
+      const finalBlob = await downloadFinalPhoto(
         blob,
         selectedFormat.id,
         selectedFormat.widthPx,
         selectedFormat.heightPx,
         100, // High quality JPEG
       );
+
+      // If user is logged in, auto-save image to Cloudinary and database history
+      if (user) {
+        setIsSaving(true);
+        const uploadData = new FormData();
+        uploadData.append("image", finalBlob, `passport-photo-${selectedFormat.id}.jpg`);
+        uploadData.append("formatId", selectedFormat.id);
+        uploadData.append("formatName", `${selectedFormat.type} (${selectedFormat.country})`);
+        uploadData.append("dimensions", `${selectedFormat.dimensionsMm} (${selectedFormat.widthPx}x${selectedFormat.heightPx}px)`);
+
+        try {
+          const saveResponse = await fetch("/api/history/save", {
+            method: "POST",
+            body: uploadData,
+          });
+          if (saveResponse.ok) {
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
+          } else {
+            console.error("Save to cloud history failed");
+          }
+        } catch (saveErr) {
+          console.error("Auto-save history network error:", saveErr);
+        } finally {
+          setIsSaving(false);
+        }
+      }
     } catch (err) {
       console.error("Export failed:", err);
       setError("Failed to export the photo. Please try again.");
@@ -155,6 +188,18 @@ export function FinalPreview({
               <>Download High Quality Photo</>
             )}
           </Button>
+
+          {isSaving && (
+            <p className="text-xs text-muted text-center animate-pulse mt-2">
+              ☁️ Saving to cloud history...
+            </p>
+          )}
+
+          {saveSuccess && (
+            <p className="text-xs text-success text-center mt-2">
+              ✓ Saved to your cloud history!
+            </p>
+          )}
 
           {/* Add to Print Layout Cart */}
           <div className="pt-6 border-t border-border/50 space-y-4">

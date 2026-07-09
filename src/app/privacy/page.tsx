@@ -16,27 +16,32 @@ export default function PrivacyPage() {
     {
       title: "2. Information We Collect",
       content:
-        "We collect very minimal information. Since Rapid Photo processes images primarily on your device (client-side), your photos are not permanently stored on our servers. We use temporary secure API routes for background removal and final exporting, but these images are deleted immediately after processing.",
+        "We collect very minimal information:\n- For Guests (Unauthenticated): Since Rapid Photo processes images primarily on your device (client-side), your photos are not stored on our servers. Images are only processed temporarily to perform background removal and DPI exports, and are immediately discarded.\n- For Registered Users (Google OAuth): If you choose to sign in using Google, we store your profile email, name, and profile picture. Additionally, when you download a finalized photo, we securely save a copy in Cloudinary and log the metadata in Supabase to provide you with a download history dashboard.",
     },
     {
-      title: "3. How We Use Your Information",
+      title: "3. 30-Day Auto-Deletion Policy",
       content:
-        "We use the information we collect or receive to: \n- Facilitate the creation of passport and visa photos.\n- Ensure compliance with official document standards.\n- Improve our AI models and user experience.",
+        "To guarantee maximum privacy for our registered users, all saved photos in your history dashboard are subject to a strict 30-day retention policy. Exactly 30 days after creation, the image files are automatically and permanently purged from Cloudinary storage, and all corresponding database logs in Supabase are deleted.",
     },
     {
-      title: "4. Third-Party Services",
+      title: "4. How We Use Your Information",
       content:
-        "We use third-party services like Google MediaPipe for face detection and external APIs for background removal. These services may process your data temporarily according to their own privacy policies.",
+        "We use the information we collect or receive to:\n- Facilitate Google login and user account identification.\n- Provide a personal dashboard where you can retrieve, download, or delete your generated photo history.\n- Ensure compliance with official document standards.",
     },
     {
-      title: "5. Data Security",
+      title: "5. Third-Party Services",
       content:
-        "We implement a variety of security measures to maintain the safety of your personal information. Your images are transmitted over secure HTTPS connections and are never shared with unauthorized third parties.",
+        "We use third-party services like Google MediaPipe for face detection and external APIs for background removal. Authenticators like Google OAuth process your sign-in, and Cloudinary hosts history storage. These services process your data temporarily according to their own privacy policies.",
     },
     {
-      title: "6. Changes to This Policy",
+      title: "6. Data Security",
       content:
-        "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.",
+        "We implement a variety of security measures to maintain the safety of your personal information. Your images are transmitted over secure HTTPS connections, access to history is protected by server-side authorization guards, and records are never shared with unauthorized third parties.",
+    },
+    {
+      title: "7. Changes to This Policy",
+      content:
+        "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. We encourage you to review this page periodically.",
     },
   ];
 
