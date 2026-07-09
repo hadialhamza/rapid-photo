@@ -5,9 +5,11 @@ import { useAuthStore } from "@/store/auth-store";
 import { X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "motion/react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export function AuthModal() {
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
   const isOpen = useAuthStore((state) => state.isAuthModalOpen);
   const openModal = useAuthStore((state) => state.openAuthModal);
   const closeModal = useAuthStore((state) => state.closeAuthModal);
@@ -17,21 +19,19 @@ export function AuthModal() {
   const [error, setError] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
 
-  // Listen to search param '?auth=required' to auto-open modal (used by proxy redirects)
   useEffect(() => {
-    if (searchParams?.get("auth") === "required") {
-      openModal();
+    if (isLoading) return;
 
-      // Clean up the URL search parameter
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("auth");
-      const cleanSearch = params.toString();
-      router.replace(`${pathname}${cleanSearch ? `?${cleanSearch}` : ""}`);
+    if (searchParams?.get("auth") === "required") {
+      if (!user) {
+        openModal();
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.delete("auth");
+      window.history.replaceState({}, "", url.pathname + url.search);
     }
-  }, [searchParams, pathname, router, openModal]);
+  }, [searchParams, openModal, user, isLoading]);
 
   const handleGoogleLogin = async () => {
     setIsPending(true);

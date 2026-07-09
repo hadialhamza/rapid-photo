@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -13,6 +13,7 @@ import { LogOut, LayoutDashboard, Sliders } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const user = useAuthStore((state) => state.user);
@@ -78,6 +79,10 @@ export function Navbar() {
     try {
       await signOut();
       setIsDropdownOpen(false);
+      if (pathname.startsWith("/editor") || pathname.startsWith("/dashboard")) {
+        router.replace("/");
+        router.refresh();
+      }
     } catch (err) {
       console.error(err);
     }
