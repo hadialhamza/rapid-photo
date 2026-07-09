@@ -24,7 +24,7 @@ export function AuthModal() {
   useEffect(() => {
     if (searchParams?.get("auth") === "required") {
       openModal();
-      
+
       // Clean up the URL search parameter
       const params = new URLSearchParams(searchParams.toString());
       params.delete("auth");
@@ -40,7 +40,11 @@ export function AuthModal() {
       await signInWithGoogle();
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
       setIsPending(false);
     }
   };
@@ -48,7 +52,7 @@ export function AuthModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -77,11 +81,12 @@ export function AuthModal() {
 
             {/* Content */}
             <div className="text-center space-y-3 mt-4">
-              <h2 className="text-2xl font-bold font-heading bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold font-heading bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Welcome to Rapid Photo
               </h2>
               <p className="text-sm text-muted">
-                Create official passport & visa photos. Log in with Google to access the editor and save your photo history.
+                Create official passport & visa photos. Log in with Google to
+                access the editor and save your photo history.
               </p>
             </div>
 
@@ -137,7 +142,9 @@ export function AuthModal() {
             {/* Privacy details */}
             <div className="mt-8 text-center">
               <span className="text-[11px] text-muted-foreground leading-normal">
-                By logging in, you agree to our privacy policy. Your data is stored on secure cloud services and processed in compliance with official identity guidelines.
+                By logging in, you agree to our privacy policy. Your data is
+                stored on secure cloud services and processed in compliance with
+                official identity guidelines.
               </span>
             </div>
           </motion.div>

@@ -27,7 +27,7 @@ export function Navbar() {
   // Sync auth state on mount and listen to changes
   useEffect(() => {
     const supabase = createClient();
-    
+
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -35,7 +35,9 @@ export function Navbar() {
     });
 
     // Listen for auth state transitions
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -48,7 +50,10 @@ export function Navbar() {
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     }
@@ -79,134 +84,142 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logo/rp-logo2.png"
-            alt="Rapid Photo Logo"
-            width={120}
-            height={60}
-            className="h-15 w-auto"
-            priority
-          />
-        </Link>
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo/rp-logo2.png"
+              alt="Rapid Photo Logo"
+              width={120}
+              height={60}
+              className="h-15 w-auto"
+              priority
+            />
+          </Link>
 
-        <div className="flex items-center gap-6">
-          <nav className="hidden md:flex items-center p-1 rounded-full border border-border bg-surface/50 backdrop-blur-sm">
-            {visibleLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted hover:text-foreground hover:bg-surface",
-                  )}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            {isLoading ? (
-              // Skeletal Loader to prevent layout shifts
-              <div className="h-10 w-28 bg-surface rounded-full border border-border animate-pulse" />
-            ) : user ? (
-              // Authenticated View
-              <div className="flex items-center gap-4">
-                <Link href="/editor" className="hidden sm:block">
-                  <Button variant="default" className="font-semibold h-10 text-xs px-4" icon={Sliders}>
-                    Go to Editor
-                  </Button>
-                </Link>
-
-                {/* Profile Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-full border border-border bg-surface/50 hover:bg-surface transition-all duration-300 active:scale-95"
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center p-1 rounded-full border border-border bg-surface/50 backdrop-blur-sm">
+              {visibleLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted hover:text-foreground hover:bg-surface",
+                    )}
                   >
-                    {user.user_metadata?.avatar_url ? (
-                      <Image
-                        src={user.user_metadata.avatar_url}
-                        alt="User Avatar"
-                        width={32}
-                        height={32}
-                        className="rounded-full object-cover w-8 h-8 border border-primary/20"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                        {user.email?.charAt(0).toUpperCase()}
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              {isLoading ? (
+                // Skeletal Loader to prevent layout shifts
+                <div className="h-10 w-28 bg-surface rounded-full border border-border animate-pulse" />
+              ) : user ? (
+                // Authenticated View
+                <div className="flex items-center gap-4">
+                  <Link href="/editor" className="hidden sm:block">
+                    <Button
+                      variant="outline"
+                      className="font-semibold h-10 text-xs px-4 bg-primary text-white hover:bg-primary-hover border-transparent hover:shadow-lg active:scale-95 transition-all duration-300 flex items-center gap-1.5"
+                    >
+                      <Sliders className="w-3.5 h-3.5" />
+                      Go to Editor
+                    </Button>
+                  </Link>
+
+                  {/* Profile Dropdown */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="flex items-center gap-2 p-1.5 rounded-full border border-border bg-surface/50 hover:bg-surface transition-all duration-300 active:scale-95"
+                    >
+                      {user.user_metadata?.avatar_url ? (
+                        <Image
+                          src={user.user_metadata.avatar_url}
+                          alt="User Avatar"
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover w-8 h-8 border border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-3 w-56 rounded-2xl border border-border bg-surface/95 backdrop-blur-xl p-2 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="px-4 py-3 border-b border-border/50">
+                          <p className="text-xs text-muted">Signed in as</p>
+                          <p className="text-sm font-semibold truncate text-foreground mt-0.5">
+                            {user.user_metadata?.full_name || user.email}
+                          </p>
+                        </div>
+                        <div className="p-1 space-y-0.5">
+                          <Link
+                            href="/dashboard"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-muted hover:text-foreground hover:bg-elevated/50 transition-colors"
+                          >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Dashboard
+                          </Link>
+                          <Link
+                            href="/editor"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="flex sm:hidden items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-muted hover:text-foreground hover:bg-elevated/50 transition-colors"
+                          >
+                            <Sliders className="w-4 h-4" />
+                            Go to Editor
+                          </Link>
+                          <button
+                            onClick={handleSignOut}
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-error hover:bg-error/10 transition-colors text-left"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            Sign Out
+                          </button>
+                        </div>
                       </div>
                     )}
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-3 w-56 rounded-2xl border border-border bg-surface/95 backdrop-blur-xl p-2 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
-                      <div className="px-4 py-3 border-b border-border/50">
-                        <p className="text-xs text-muted">Signed in as</p>
-                        <p className="text-sm font-semibold truncate text-foreground mt-0.5">
-                          {user.user_metadata?.full_name || user.email}
-                        </p>
-                      </div>
-                      <div className="p-1 space-y-0.5">
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-muted hover:text-foreground hover:bg-elevated/50 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4" />
-                          Dashboard
-                        </Link>
-                        <Link
-                          href="/editor"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="flex sm:hidden items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-muted hover:text-foreground hover:bg-elevated/50 transition-colors"
-                        >
-                          <Sliders className="w-4 h-4" />
-                          Go to Editor
-                        </Link>
-                        <button
-                          onClick={handleSignOut}
-                          className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-error hover:bg-error/10 transition-colors text-left"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              // Guest View
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={openAuthModal}
-                  className="px-4 py-2 text-sm font-semibold text-muted hover:text-foreground transition-colors cursor-pointer"
-                >
-                  Sign In
-                </button>
-                <Button onClick={openAuthModal} className="font-semibold h-10">
-                  Get Started
-                </Button>
-              </div>
-            )}
+              ) : (
+                // Guest View
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={openAuthModal}
+                    className="px-4 py-2 text-sm font-semibold text-muted hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                  <Button
+                    onClick={openAuthModal}
+                    className="font-semibold h-10"
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Initialize AuthModal container */}
       <React.Suspense fallback={null}>
         <AuthModal />
       </React.Suspense>
-    </header>
+    </>
   );
 }
