@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/store/auth-store";
 import { AuthModal } from "@/components/auth/AuthModal";
 import React, { useEffect, useState, useRef } from "react";
-import { LogOut, LayoutDashboard, Sliders, AlertCircle } from "lucide-react";
+import { LogOut, LayoutDashboard, Sliders, AlertCircle, ShieldAlert } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 
 export function Navbar() {
@@ -26,14 +26,29 @@ export function Navbar() {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   // Sync auth state on mount and listen to changes
   useEffect(() => {
     const supabase = createClient();
 
+    const fetchRole = async (userId: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+      setUserRole(data?.role ?? null);
+    };
+
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
       setIsLoading(false);
     });
 
@@ -42,6 +57,11 @@ export function Navbar() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
       setIsLoading(false);
     });
 
@@ -87,10 +107,13 @@ export function Navbar() {
     { name: "Formats", href: "/formats" },
   ];
 
-  // Include Dashboard if authenticated
+  // Include Dashboard and Admin links if authenticated
   const visibleLinks = [...navLinks];
   if (user) {
     visibleLinks.push({ name: "Dashboard", href: "/dashboard" });
+    if (userRole === "admin") {
+      visibleLinks.push({ name: "Admin", href: "/admin" });
+    }
   }
 
   const handleSignOut = async () => {
@@ -206,9 +229,19 @@ export function Navbar() {
                             <Sliders className="w-4 h-4" />
                             Go to Editor
                           </Link>
+                          {userRole === "admin" && (
+                            <Link
+                              href="/admin"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-muted hover:text-foreground hover:bg-elevated/50 transition-colors"
+                            >
+                              <ShieldAlert className="w-4 h-4 text-secondary animate-pulse" />
+                              Admin Console
+                            </Link>
+                          )}
                           <button
                             onClick={handleSignOut}
-                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-error hover:bg-error/10 transition-colors text-left"
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-error hover:bg-error/10 transition-colors text-left cursor-pointer"
                           >
                             <LogOut className="w-4 h-4" />
                             Sign Out

@@ -17,8 +17,9 @@ create table public.profiles (
 -- Enable RLS on profiles
 alter table public.profiles enable row level security;
 
--- Grant permissions to authenticated users
+-- Grant permissions to authenticated users and service_role
 grant select, update on public.profiles to authenticated;
+grant all privileges on public.profiles to service_role;
 
 -- RLS Policies for Profiles
 create policy "Users can view their own profile"
@@ -37,7 +38,7 @@ create policy "Users can update their own profile"
 -- =========================================================================
 create table public.user_images (
   id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
   image_url text not null,
   public_id text not null,
   format_id text not null,
@@ -50,8 +51,9 @@ create table public.user_images (
 -- Enable Row Level Security (RLS)
 alter table public.user_images enable row level security;
 
--- Grant permissions to the authenticated role
+-- Grant privileges
 grant select, insert, delete on public.user_images to authenticated;
+grant all privileges on public.user_images to service_role;
 
 -- RLS Policies for User Images (Ensure users can only access their own data)
 create policy "Users can insert their own images" 
