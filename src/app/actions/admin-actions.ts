@@ -22,6 +22,7 @@ export async function updateUserStatus(
   }
 
   revalidatePath("/admin/users");
+  revalidatePath("/admin/overview");
 }
 
 export async function updateUserRole(userId: string, role: "user" | "admin") {
@@ -38,6 +39,7 @@ export async function updateUserRole(userId: string, role: "user" | "admin") {
   }
 
   revalidatePath("/admin/users");
+  revalidatePath("/admin/overview");
 }
 
 export async function deleteUserImage(imageId: string) {
@@ -73,6 +75,6 @@ export async function deleteUserImage(imageId: string) {
     throw new Error(error.message);
   }
 
-  revalidatePath("/admin/images");
   revalidatePath("/admin");
+  revalidatePath("/admin/overview");
 }

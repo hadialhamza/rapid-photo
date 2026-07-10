@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { downloadImage } from "@/lib/download";
 
 interface SavedImage {
   id: string;
@@ -56,17 +57,7 @@ export function DashboardGallery() {
   const handleDownload = async (imageUrl: string, formatId: string, id: string) => {
     setDownloadingId(id);
     try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const downloadUrl = URL.createObjectURL(blob);
-      
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      a.download = `saved-photo-${formatId}-${id.slice(0, 5)}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(downloadUrl);
+      await downloadImage(imageUrl, `saved-photo-${formatId}-${id.slice(0, 5)}.jpg`);
     } catch (err) {
       console.error("Failed to download image:", err);
       alert("Failed to download image. Please try again.");

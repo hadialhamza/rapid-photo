@@ -110,9 +110,10 @@ export function Navbar() {
   // Include Dashboard and Admin links if authenticated
   const visibleLinks = [...navLinks];
   if (user) {
-    visibleLinks.push({ name: "Dashboard", href: "/dashboard" });
     if (userRole === "admin") {
       visibleLinks.push({ name: "Admin", href: "/admin" });
+    } else {
+      visibleLinks.push({ name: "Dashboard", href: "/dashboard" });
     }
   }
 

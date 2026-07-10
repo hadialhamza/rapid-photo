@@ -1,11 +1,7 @@
 import { requireAdmin } from "@/lib/supabase/auth";
 import Link from "next/link";
-import {
-  Users,
-  Image as ImageIcon,
-  LayoutDashboard,
-  ArrowLeft,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 
 export default async function AdminLayout({
   children,
@@ -27,29 +23,7 @@ export default async function AdminLayout({
           </p>
         </div>
 
-        <nav className="flex flex-col gap-1.5 flex-1">
-          <Link
-            href="/admin"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted hover:text-foreground hover:bg-elevated/50 transition-all"
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            Overview
-          </Link>
-          <Link
-            href="/admin/users"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted hover:text-foreground hover:bg-elevated/50 transition-all"
-          >
-            <Users className="w-4 h-4" />
-            Manage Users
-          </Link>
-          <Link
-            href="/admin/images"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted hover:text-foreground hover:bg-elevated/50 transition-all"
-          >
-            <ImageIcon className="w-4 h-4" />
-            Image History
-          </Link>
-        </nav>
+        <AdminSidebarNav />
 
         <div className="border-t border-border/50 pt-4">
           <Link
@@ -68,20 +42,20 @@ export default async function AdminLayout({
         <div className="flex md:hidden items-center justify-between border-b border-border bg-surface/50 px-6 py-4">
           <span className="font-heading font-bold text-lg">Admin Panel</span>
           <div className="flex items-center gap-4 text-sm font-medium">
-            <Link href="/admin" className="text-muted hover:text-foreground">
+            <Link href="/admin/overview" className="text-muted hover:text-foreground">
               Overview
+            </Link>
+            <Link
+              href="/admin"
+              className="text-muted hover:text-foreground"
+            >
+              Gallery
             </Link>
             <Link
               href="/admin/users"
               className="text-muted hover:text-foreground"
             >
               Users
-            </Link>
-            <Link
-              href="/admin/images"
-              className="text-muted hover:text-foreground"
-            >
-              Images
             </Link>
           </div>
         </div>
