@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EditorWorkspace } from "@/components/editor/EditorWorkspace";
+import { requireUser } from "@/lib/supabase/auth";
 
 export const metadata: Metadata = {
   title: "Photo Editor",
@@ -37,6 +38,8 @@ export default async function EditorPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  await requireUser(); // Guard editor from unauthenticated guests
+
   const { preset } = await searchParams;
   const presetId = typeof preset === "string" ? preset : undefined;
 

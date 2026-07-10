@@ -64,7 +64,7 @@ export function Navbar() {
         });
       }
     }
-  }, [signOut]);
+  }, [signOut, pathname]);
 
   // Close dropdown on click outside
   useEffect(() => {

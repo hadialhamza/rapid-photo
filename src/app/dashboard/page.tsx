@@ -1,22 +1,13 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/auth";
 import { DashboardGallery } from "@/components/dashboard/DashboardGallery";
 import Image from "next/image";
 
 export default async function DashboardPage() {
-  // 1. Authenticate user on the server
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // 1. Authenticate user on the server (handles redirect and ban checks)
+  const { user, profile } = await requireUser();
 
-  // Secure Server-side redirection for guests
-  if (!user) {
-    redirect("/?auth=required");
-  }
-
-  const name = user.user_metadata?.full_name || user.email || "User";
-  const avatarUrl = user.user_metadata?.avatar_url;
+  const name = profile.full_name || user.email || "User";
+  const avatarUrl = profile.avatar_url;
 
   return (
     <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl space-y-8">
