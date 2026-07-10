@@ -9,7 +9,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/store/auth-store";
 import { AuthModal } from "@/components/auth/AuthModal";
 import React, { useEffect, useState, useRef } from "react";
-import { LogOut, LayoutDashboard, Sliders } from "lucide-react";
+import { LogOut, LayoutDashboard, Sliders, AlertCircle } from "lucide-react";
+import { Modal } from "@/components/ui/Modal";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -24,6 +25,7 @@ export function Navbar() {
   const signOut = useAuthStore((state) => state.signOut);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isBannedModalOpen, setIsBannedModalOpen] = useState(false);
 
   // Sync auth state on mount and listen to changes
   useEffect(() => {
@@ -47,6 +49,22 @@ export function Navbar() {
       subscription.unsubscribe();
     };
   }, [setUser, setIsLoading]);
+
+  // Check for banned user redirect query param
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("auth") === "banned") {
+        signOut().then(() => {
+          setIsBannedModalOpen(true);
+          // Clean the query parameter from the URL
+          const url = new URL(window.location.href);
+          url.searchParams.delete("auth");
+          window.history.replaceState({}, "", url.pathname + url.search);
+        });
+      }
+    }
+  }, [signOut]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -225,6 +243,28 @@ export function Navbar() {
       <React.Suspense fallback={null}>
         <AuthModal />
       </React.Suspense>
+
+      <Modal isOpen={isBannedModalOpen} onClose={() => setIsBannedModalOpen(false)}>
+        <div className="text-center space-y-4 mt-4">
+          <div className="w-12 h-12 bg-destructive/10 text-destructive rounded-full flex items-center justify-center mx-auto">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-bold font-heading text-foreground">
+            Account Banned
+          </h2>
+          <p className="text-sm text-muted leading-relaxed">
+            Your account has been banned. If you believe this is a mistake, please contact support.
+          </p>
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full mt-2 cursor-pointer"
+            onClick={() => setIsBannedModalOpen(false)}
+          >
+            Okay
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 }

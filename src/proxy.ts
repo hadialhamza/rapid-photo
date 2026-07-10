@@ -34,11 +34,15 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // const pathname = request.nextUrl.pathname;
+  let user = null;
+  try {
+    const {
+      data: { user: supabaseUser },
+    } = await supabase.auth.getUser();
+    user = supabaseUser;
+  } catch (error) {
+    console.error("Proxy auth error:", error);
+  }
 
   // If there is no authenticated user and they attempt to access protected routes
   if (!user) {
@@ -52,5 +56,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/editor/:path*", "/dashboard/:path*"],
+  matcher: ["/editor/:path*", "/dashboard/:path*", "/admin/:path*"],
 };
